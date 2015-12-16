@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Login</title>
+<meta name="description" content="Login">
+<meta name="viewport" content="width=device-width">
+<!-- Material Design fonts -->
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+	type="text/css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+
+
+
+<!-- Bootstrap Material Design -->
+<link
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="css/bootstrap-material-design.css" rel="stylesheet">
+<link href="css/ripples.min.css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet">
+
+<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="js/ripples.min.js"></script>
+<script type="text/javascript" src="js/material.min.js"></script>
+
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript"
+	src="http://www.parsecdn.com/js/parse-latest.js"></script>
+
+<script>
+	$.material.init();
+	Parse.initialize(Utils.APP_ID, Utils.JS_KEY);
+</script>
+</head>
+<body>
+	<h1 class="header">
+		Intervention <i>Online</i>
+	</h1>
+
+	<div class="col-md-6">
+		<div class="well bs-component">
+			<form class="form-horizontal loginregister">
+				<fieldset>
+					<legend>Log in / Register</legend>
+					<div class="col-md-10">
+						<span class="error" style="display: gone"></span>
+					</div>
+					<div class="form-group has-error">
+
+						<label for="inputEmail" class="col-md-2 control-label">Email</label>
+
+						<div class="col-md-10">
+							<input type="email" class="form-control" id="inputEmail"
+								placeholder="Email">
+						</div>
+						<span class="material-input"></span>
+					</div>
+					<div class="form-group is-empty">
+						<label for="inputPassword" class="col-md-2 control-label">Password</label>
+
+						<div class="col-md-10">
+							<input type="password" class="form-control" id="inputPassword"
+								placeholder="Password">
+
+						</div>
+						<span class="material-input"></span>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-10 col-md-offset-2">
+
+							<button type="login" class="login btn btn-raised btn-primary">Login</button>
+							<button type="register"
+								class="register btn btn-raised btn-default">Register</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			<div id="source-button" class="btn btn-primary btn-xs"
+				style="display: none;">&lt; &gt;</div>
+		</div>
+	</div>
+
+</body>
+<script>
+	
+	
+	$(".login").click(function(event) {
+		alert("login");
+		event.preventDefault();
+	});
+
+	$(".register").click(function(event) {
+		register();
+		event.preventDefault();
+	});
+	
+	var register = function(){
+		var user = new Parse.User();
+		user.set("username", $("#inputEmail").val());
+		user.set("password", $("#inputPassword".val()));
+		user.set("email", $("#inputEmail").val());
+
+
+		user.signUp(null, {
+		  success: function(user) {
+		    alert("success");
+		    
+		  },
+		  error: function(user, error) {
+		    // Show the error message somewhere and let the user try again.
+		    Utils.showError("Error: " + error.code + " " + error.message);
+		  }
+		});
+	}
+</script>
+</html>

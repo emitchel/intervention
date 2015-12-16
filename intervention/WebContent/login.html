@@ -28,6 +28,8 @@
 <script type="text/javascript" src="js/material.min.js"></script>
 
 <script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript"
+	src="http://www.parsecdn.com/js/parse-latest.js"></script>
 
 <script>
 	$.material.init();
@@ -40,10 +42,14 @@
 
 	<div class="col-md-6">
 		<div class="well bs-component">
-			<form class="form-horizontal">
+			<form class="form-horizontal loginregister">
 				<fieldset>
 					<legend>Log in / Register</legend>
+					<div class="col-md-10">
+						<span class="error" style="display: gone"></span>
+					</div>
 					<div class="form-group has-error">
+
 						<label for="inputEmail" class="col-md-2 control-label">Email</label>
 
 						<div class="col-md-10">
@@ -62,12 +68,13 @@
 						</div>
 						<span class="material-input"></span>
 					</div>
-					
+
 					<div class="form-group">
 						<div class="col-md-10 col-md-offset-2">
-							
-							<button type="login" class="btn btn-raised btn-primary">Login</button>
-							<button type="register" class="btn btn-raised btn-default">Register</button>
+
+							<button type="login" class="login btn btn-raised btn-primary">Login</button>
+							<button type="register"
+								class="register btn btn-raised btn-default">Register</button>
 						</div>
 					</div>
 				</fieldset>
@@ -78,4 +85,46 @@
 	</div>
 
 </body>
+<script>
+	$(".login").click(function(event) {
+		event.preventDefault();
+		login();
+	});
+
+	$(".register").click(function(event) {
+		event.preventDefault();
+		register();
+
+	});
+
+	var login = function() {
+		Parse.User.logIn($("#inputEmail").val(), $("#inputPassword").val(), {
+			success : function(user) {
+				alert("success");
+			},
+			error : function(user, error) {
+				Utils.showError(error.message);
+			}
+		});
+
+	}
+
+	var register = function() {
+		var user = new Parse.User();
+		user.set("username", $("#inputEmail").val());
+		user.set("password", $("#inputPassword").val());
+		user.set("email", $("#inputEmail").val());
+
+		user.signUp(null, {
+			success : function(user) {
+				alert("success");
+
+			},
+			error : function(user, error) {
+				// Show the error message somewhere and let the user try again.
+				Utils.showError("Error: " + error.code + " " + error.message);
+			}
+		});
+	}
+</script>
 </html>

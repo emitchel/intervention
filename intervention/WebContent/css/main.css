@@ -9,9 +9,12 @@ body {
 	/* For Firefox 3.6 to 15 */
 	background: linear-gradient(#3B3B3B, #222222); /* Standard syntax */
 	padding: 32px;
+	
+	margin: 0;
+	height: 100%;
 }
 
-html,body {
+html {
 	margin: 0;
 	height: 100%;
 }

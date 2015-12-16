@@ -1,0 +1,20 @@
+var app_id = 'mlfonYP5XuHFXO16m8sajJmVgUeYggOHhwaoB5cn';
+var js_key = 'b3uxTOdZIv95MkACPv6Wu1thJoIc1B3WuFWNEALh';
+//Static class that can be used across the entire app
+function Utils(){}
+
+Utils.APP_ID = app_id;
+Utils.JS_KEY = js_key;
+
+Utils.showError = function(errorMsg){
+	$(".error").html("<span class='error'>" + errorMsg + "</span>");
+	$(".error").show();
+}
+
+Utils.hideError = function(){
+	$(".error").hide();
+}
+//everything that should run onLoad
+$(document).ready(function() {
+	$(".error").hide();
+});

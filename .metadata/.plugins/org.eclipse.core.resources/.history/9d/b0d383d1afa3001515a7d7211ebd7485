@@ -1,0 +1,20 @@
+var app_id = 'mlfonYP5XuHFXO16m8sajJmVgUeYggOHhwaoB5cn';
+var js_key = 'b3uxTOdZIv95MkACPv6Wu1thJoIc1B3WuFWNEALh';
+
+function Utils(){}
+
+Utils.APP_ID = app_id;
+Utils.JS_KEY = js_key;
+
+var showError = function(errorMsg){
+	$(".error").html("<span class='error'>" + errorMsg + "</span>");
+	$(".error").show();
+}
+
+var hideError = function(){
+	$(".error").hide();
+}
+
+$(document).ready(function() {
+	$(".error").hide();
+});
