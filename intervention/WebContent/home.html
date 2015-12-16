@@ -88,71 +88,12 @@
 </body>
 <script>
 $(document).ready(function() {
-	if(Utils.userLoggedIn()){
-		Utils.goPage(Urls.HOME);
+	if(!Utils.userLoggedIn()){
+		Utils.goPage(Urls.LOGIN);
 	}
 	
 });
 
-	$(".login").click(function(event) {
-		event.preventDefault();
-		login();
-	});
 
-	$(".register").click(function(event) {
-		event.preventDefault();
-		register();
-
-	});
-	
-	
-	function checkForm(){
-		var email = $("#inputEmail").val();
-		var pwd = $("#inputPassword").val()
-	}
-	
-	var login = function() {
-		var message = checkForm();
-		if(Utils.isValidString(message)){
-			Utils.showError(message);
-			return;
-		}
-		
-		Parse.User.logIn($("#inputEmail").val(), $("#inputPassword").val(), {
-			success : function(user) {
-				Utils.goPage(Urls.HOME);
-			},
-			error : function(user, error) {
-				Utils.showError(error.message);
-			}
-		});
-
-	}
-
-	var register = function() {
-	
-		var message = checkForm();
-		if(Utils.isValidString(message)){
-			Utils.showError(message);
-			return;
-		}
-		
-		
-		var user = new Parse.User();
-		user.set("username", $("#inputEmail").val());
-		user.set("password", $("#inputPassword").val());
-		user.set("email", $("#inputEmail").val());
-
-		user.signUp(null, {
-			success : function(user) {
-				login();
-
-			},
-			error : function(user, error) {
-				// Show the error message somewhere and let the user try again.
-				Utils.showError("Error: " + error.code + " " + error.message);
-			}
-		});
-	}
 </script>
 </html>
