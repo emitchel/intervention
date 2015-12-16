@@ -1,0 +1,7 @@
+INDEX VERSION 1.122+C:\Users\ellio\Documents\GitHub\intervention\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3906120200.index
+2024707360.index
+914954956.index
+3048513145.index
+2716327241.index
+2561417716.index
