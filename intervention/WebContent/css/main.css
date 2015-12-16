@@ -1,4 +1,4 @@
-body {
+body.landingPage {
 	/*linear gradient */
 	background: #292929; /* For browsers that do not support gradients */
 	background: -webkit-linear-gradient(#3B3B3B, #222222);
@@ -21,4 +21,15 @@ html {
 
 .header {
 	color: white;
+}
+
+.navbar_global  {
+background: #292929; /* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(#3B3B3B, #222222);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#3B3B3B, #222222);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#3B3B3B, #222222);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(#3B3B3B, #222222); /* Standard syntax */
 }

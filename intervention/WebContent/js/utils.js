@@ -43,7 +43,7 @@ Utils.showError = function(errorMsg){
 }
 
 Utils.hideError = function(){
-	$(".error").hide();
+	$(".error").hide("slow");
 }
 
 /**
@@ -63,6 +63,8 @@ Utils.isValidString = function(str){
          //not null                                                //not empty     
 return  !(str === null || str === undefined || str == "null") && !(!str || 0 === str.length) 
 }
+
+
 
 Utils.userLoggedIn = function(){
 	return Parse.User.current() !== null;

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 
-<title>Login</title>
-<meta name="description" content="Login">
+<title>Home</title>
+<meta name="description" content="Home">
 <meta name="viewport" content="width=device-width">
 <!-- Material Design fonts -->
 <link rel="stylesheet"
@@ -24,6 +24,7 @@
 <link href="css/main.css" rel="stylesheet">
 
 <script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/ripples.min.js"></script>
 <script type="text/javascript" src="js/material.min.js"></script>
 
@@ -37,53 +38,59 @@
 </script>
 </head>
 <body>
-	<h1 class="header">
-		Intervention <i>Online</i>
-	</h1>
+<nav class="navbar_global navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      
+      <a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention <i>Online</i></a>
+    </div>
 
-	<div class="col-md-6">
-		<div class="well bs-component">
-			<form class="form-horizontal loginregister">
-				<fieldset>
-					<legend>Log in / Register</legend>
-					<div class="col-md-10">
-						<span class="error" style="display: gone"></span>
-					</div>
-					<div class="form-group has-error">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+   
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#" >Settings</a></li>
+			<li><a href="javascript:Utils.logout()" >Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+<div class="row">
 
-						<label for="inputEmail" class="col-md-2 control-label">Email</label>
+      <div class="col-md-12">
+        <div class="bs-component">
+          <div class="jumbotron">
+          <h1>Welcome to Beta!</h1>
+			<p>This is an open source project focused on automating the board game, <a href="https://www.playintervention.com/">Intervention<a>.</p>
+			<p>
+			<button type="button" class="login btn btn-raised btn-primary" onclick="javascript:Utils.goPage(Urls.GITHUB)">Github</button>
+			</p>
+          </div>
+        </div>
+    </div>
+	
+</div>
 
-						<div class="col-md-10">
-							<input type="email" class="form-control" id="inputEmail"
-								placeholder="Email">
-						</div>
-						<span class="material-input"></span>
-					</div>
-					<div class="form-group is-empty">
-						<label for="inputPassword" class="col-md-2 control-label">Password</label>
 
-						<div class="col-md-10">
-							<input type="password" class="form-control" id="inputPassword"
-								placeholder="Password">
 
-						</div>
-						<span class="material-input"></span>
-					</div>
-
-					<div class="form-group">
-						<div class="col-md-10 col-md-offset-2">
-
-							<button type="login" class="login btn btn-raised btn-primary">Login</button>
-							<button type="register"
-								class="register btn btn-raised btn-default">Register</button>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-			<div id="source-button" class="btn btn-primary btn-xs"
-				style="display: none;">&lt; &gt;</div>
+<div class="row">
+		<div class="col-md-12">
+		<div class="error alert alert-success" role="alert"></div>
 		</div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		
 	</div>
+	
+</div>
+</div>
 
 </body>
 <script>
@@ -91,6 +98,11 @@ $(document).ready(function() {
 	if(!Utils.userLoggedIn()){
 		Utils.goPage(Urls.LOGIN);
 	}
+	
+	//setting username
+	var user = Parse.User.current();
+	$(".username").html(user.get("displayName"));
+	
 	
 });
 
