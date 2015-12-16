@@ -67,7 +67,7 @@
         <div class="bs-component">
           <div class="jumbotron">
           <h1>Welcome to Beta!</h1>
-			<p>This is an open source project focused on automating the board game, <a href="https://www.playintervention.com/">Intervention<a>.</p>
+			<p>This is an open source project focused on automating the board game, <a href="https://www.playintervention.com/">Intervention</a>.</p>
 			<p>
 			<button type="button" class="login btn btn-raised btn-primary" onclick="javascript:Utils.goPage(Urls.GITHUB)">Github</button>
 			</p>
@@ -85,8 +85,23 @@
 		</div>
 </div>
 <div class="row">
-	<div class="col-md-6">
+	<div class="text-center col-md-4">
+		<button type="button" class="create btn btn-lg btn-primary btn-block btn-raised" >Create Game</button>
+		<div class="loading" style="display:none"> ...Generating Game... </div>
 		
+			<div class="game_created" style="display:none">
+					<p>Share this code to have players join your game</p>
+					<span class="generated_code"></span>
+					<p><span class="link_to_manager"></span></p>
+			</div>
+		
+	</div>
+	
+	<div class="text-center col-md-4">
+		<h2>Or</h2>
+	</div>
+	<div class="text-center col-md-4">
+		<button type="button" class="join btn btn-primary btn-lg btn-block btn-raised" >Join Game</button>
 	</div>
 	
 </div>
@@ -103,9 +118,55 @@ $(document).ready(function() {
 	var user = Parse.User.current();
 	$(".username").html(user.get("displayName"));
 	
-	
 });
 
+$(".create").click(function(event) {
+		create();
+	});
+	
+	function create(){
+		$(".loading").show("slow");
+		$('.create').prop('disabled', true);
+		getId()
+	
+	}
+	
+	//need to find a unique game id
+	function getId(){
+		
+		var nRandomID = Utils.getRandomInt(Utils.GAME_ID_MIN, Utils.GAME_ID_MAX);
+		
+		var GameScore = Parse.Object.extend("game");
+		var query = new Parse.Query(GameScore);
+		query.equalTo("unique_id", String(nRandomID));
+		query.find({
+		  success: function(results) {
+		  if(results.length>0){
+			 return getId(); 
+			} else {
+			idFound(nRandomID);
+			}
+		  },
+		  error: function(error) {
+			idFound(nRandomID);
+		  }
+		});
+	}
+	
+	function idFound(id){
+		$(".loading").hide("slow");
+		$(".game_created").show("slow");
+		$(".generated_code").html(id);
+		
+		var user = Parse.User.current();
+		var userId = user.id;
+		var link="manage.landing.html?ownerId="+userId+"&gameId="+id;
+		var sHTML = "<a href='" + link + "' />";
+		
+		$(".link_to_manager").html(sHTML);
+	}
+
+	
 
 </script>
 </html>

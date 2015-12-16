@@ -23,6 +23,11 @@ html {
 	color: white;
 }
 
+.center {
+width: 50%;
+    margin: 0 auto;
+	}
+
 .navbar_global  {
 background: #292929; /* For browsers that do not support gradients */
 	background: -webkit-linear-gradient(#3B3B3B, #222222);

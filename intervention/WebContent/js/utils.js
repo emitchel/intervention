@@ -19,6 +19,8 @@ function Utils(){
 Utils.APP_ID = app_id;
 Utils.JS_KEY = js_key;
 
+Utils.GAME_ID_MIN = 0;
+Utils.GAME_ID_MAX = 100000000;//100 000 000
 
 
 //** DOM READY LOGIC
@@ -81,4 +83,8 @@ $(document).bind('keypress', function(e){
      methodToCall();
    }
 });
+}
+
+Utils.getRandomInt = function(min,max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
