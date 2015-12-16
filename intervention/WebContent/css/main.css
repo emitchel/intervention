@@ -38,3 +38,8 @@ background: #292929; /* For browsers that do not support gradients */
 	/* For Firefox 3.6 to 15 */
 	background: linear-gradient(#3B3B3B, #222222); /* Standard syntax */
 }
+
+.generated_code {
+font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-size: 25px;
+}

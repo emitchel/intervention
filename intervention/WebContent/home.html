@@ -90,9 +90,10 @@
 		<div class="loading" style="display:none"> ...Generating Game... </div>
 		
 			<div class="game_created" style="display:none">
-					<p>Share this code to have players join your game</p>
+					<p><h4>Share this code to have players join your game</h4></p>
 					<span class="generated_code"></span>
-					<p><span class="link_to_manager"></span></p>
+					<br/>
+					<button type="button" class="login btn btn-raised btn-primary" onclick="javascript:goToManagePage()">Manage Your Game <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
 			</div>
 		
 	</div>
@@ -119,6 +120,8 @@ $(document).ready(function() {
 	$(".username").html(user.get("displayName"));
 	
 });
+
+var manageURL;
 
 $(".create").click(function(event) {
 		create();
@@ -154,18 +157,25 @@ $(".create").click(function(event) {
 	}
 	
 	function idFound(id){
-		$(".loading").hide("slow");
+		$(".loading").hide("slow",function(){
 		$(".game_created").show("slow");
+		
+		
 		$(".generated_code").html(id);
 		
 		var user = Parse.User.current();
 		var userId = user.id;
 		var link="manage.landing.html?ownerId="+userId+"&gameId="+id;
-		var sHTML = "<a href='" + link + "' />";
+		manageURL = link;
 		
-		$(".link_to_manager").html(sHTML);
+		});
+		
 	}
-
+	
+	
+	function goToManagePage(){
+		alert(manageURL);
+	}
 	
 
 </script>
