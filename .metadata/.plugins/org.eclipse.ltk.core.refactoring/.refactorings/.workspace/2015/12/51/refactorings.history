@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;intervention/bootstrap-material-design-master/docs/sitemap.xml&apos;" deleteContents="false" description="Delete resource &apos;intervention/bootstrap-material-design-master/docs/sitemap.xml&apos;" element1="/intervention/bootstrap-material-design-master/docs/sitemap.xml" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1450226329290"/>
+</session>
