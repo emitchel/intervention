@@ -66,8 +66,8 @@
 					<div class="form-group">
 						<div class="col-md-10 col-md-offset-2">
 							
-							<button type="login" class="btn btn-raised btn-primary">Login</button>
-							<button type="register" class="btn btn-raised btn-default">Register</button>
+							<button type="login" class="btn btn-raised btn-primary">Submit</button>
+							<button type="register" class="btn btn-raised btn-default">Cancel</button>
 						</div>
 					</div>
 				</fieldset>

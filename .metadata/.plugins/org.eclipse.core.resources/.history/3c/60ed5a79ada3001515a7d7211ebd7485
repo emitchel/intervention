@@ -8,12 +8,13 @@ body {
 	background: -moz-linear-gradient(#3B3B3B, #222222);
 	/* For Firefox 3.6 to 15 */
 	background: linear-gradient(#3B3B3B, #222222); /* Standard syntax */
+	/*make body wrap entire page*/
+	position: fixed; top : 0px; bottom : 0px; left : 0px; right : 0px;
 	padding: 32px;
-}
-
-html,body {
-	margin: 0;
-	height: 100%;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
 }
 
 .header {
