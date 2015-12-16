@@ -37,6 +37,7 @@ $(document).ready(function() {
 * 	There must be a div with class name 'error' on the page
 **/
 Utils.showError = function(errorMsg){
+
 	$(".error").html("<span class='error'>" + errorMsg + "</span>");
 	$(".error").show("slow");
 }
@@ -70,4 +71,12 @@ Utils.userLoggedIn = function(){
 Utils.logout = function(){
 	Parse.User.logOut();
 	Utils.goPage(Urls.LOGIN);
+}
+
+Utils.sentEnterMethod = function(methodToCall){
+$(document).bind('keypress', function(e){
+   if(e.which === 13) { // return
+     methodToCall();
+   }
+});
 }

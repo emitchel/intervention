@@ -24,6 +24,7 @@
 <link href="css/main.css" rel="stylesheet">
 
 <script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/ripples.min.js"></script>
 <script type="text/javascript" src="js/material.min.js"></script>
 
@@ -40,15 +41,42 @@
 	<h1 class="header">
 		Intervention <i>Online</i>
 	</h1>
+<!-- Modal -->
+<div id="display-name-modal" class="modal fade" tabindex="-1" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Choose Your Display Name</h4>
+      </div>
+      <div class="modal-body">
+        <p>What would you like your display name to be?</p>
+		<div class="form-group is-empty">
+						<label for="inputDisplayName" class="col-md-2 control-label">Display Name</label>
 
+						<div class="col-md-10">
+							<input type="text" class="form-control" id="inputDisplayName"
+								placeholder="Display Name">
+
+						</div>
+						<span class="material-input"></span>
+					</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="register btn btn-primary" data-dismiss="modal">Register<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 25.6563px; top: 17px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Dismiss<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 25.6563px; top: 17px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
+      </div>
+    </div>
+  </div>
+</div>
 	<div class="col-md-6">
 		<div class="well bs-component">
-			<form class="form-horizontal loginregister">
 				<fieldset>
 					<legend>Log in / Register</legend>
 					<div class="col-md-10">
 						<span class="error" style="display: gone"></span>
 					</div>
+					
 					<div class="form-group has-error">
 
 						<label for="inputEmail" class="col-md-2 control-label">Email</label>
@@ -73,24 +101,26 @@
 					<div class="form-group">
 						<div class="col-md-10 col-md-offset-2">
 
-							<button type="login" class="login btn btn-raised btn-primary">Login</button>
-							<button type="register"
-								class="register btn btn-raised btn-default">Register</button>
+							<button type="button" class="login btn btn-raised btn-primary">Login</button>
+							<button type="button"
+								class="btn btn-raised btn-default" data-toggle="modal" data-target="#display-name-modal">Register</button>
 						</div>
 					</div>
 				</fieldset>
-			</form>
-			<div id="source-button" class="btn btn-primary btn-xs"
-				style="display: none;">&lt; &gt;</div>
 		</div>
 	</div>
 
 </body>
 <script>
+var bRegistering = false;
+
 $(document).ready(function() {
 	if(Utils.userLoggedIn()){
 		Utils.goPage(Urls.HOME);
 	}
+	
+	//if user hits enter, we want this method to execute
+	Utils.sentEnterMethod(login);
 	
 });
 
@@ -109,6 +139,17 @@ $(document).ready(function() {
 	function checkForm(){
 		var email = $("#inputEmail").val();
 		var pwd = $("#inputPassword").val()
+		var dp = $("#inputDisplayName").val();
+		if(!Utils.isValidString(email) || !Utils.isValidString(pwd)){
+			return "Email and Password must be provided";
+		}
+		
+		if(bRegistering && !Utils.isValidString(dp)){
+			return "Display name must be provided";
+		}
+		
+		return "";
+		
 	}
 	
 	var login = function() {
@@ -130,18 +171,22 @@ $(document).ready(function() {
 	}
 
 	var register = function() {
+	bRegistering = true;
 	
 		var message = checkForm();
+		
 		if(Utils.isValidString(message)){
 			Utils.showError(message);
 			return;
 		}
-		
-		
+	//need to reset
+	bRegistering = false;
+	
 		var user = new Parse.User();
 		user.set("username", $("#inputEmail").val());
 		user.set("password", $("#inputPassword").val());
 		user.set("email", $("#inputEmail").val());
+		user.set("displayName",$("#inputDisplayName").val());
 
 		user.signUp(null, {
 			success : function(user) {
