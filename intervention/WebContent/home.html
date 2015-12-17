@@ -110,7 +110,7 @@
 			<div class="join_game" style="display:none">
 					<p><h4><span class="game_search_status"></span></h4></p>
 					<br/>
-					<button type="button" class="joingamebtn btn btn-raised btn-primary" disabled onclick="javascript:joinGameWithCode()">EnterGame<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
+					<button type="button" class="joingamebtn btn btn-raised btn-primary" disabled onclick="javascript:joinGameWithCode()">Enter Game<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
 			</div>
 	</div><!-- /input-group -->
 	</div>
@@ -181,7 +181,7 @@ $(".create").click(function(event) {
 			var ownerName = obj.get("owner_name");
 			
 			if(!isStarted){
-			joinGameUrl = "play.html?gameId=" +String(uniqueId);
+			joinGameURL = "play.html?gameId=" +String(uniqueId);
 				joinGameBtn.prop("disabled",false);
 				gameSearchStatus.html("<b><i>"+ownerName + "</i></b> is the owner of this game and it is active, join now!");
 			} else {
