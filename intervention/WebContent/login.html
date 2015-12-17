@@ -187,6 +187,7 @@ $(document).ready(function() {
 		user.set("password", $("#inputPassword").val());
 		user.set("email", $("#inputEmail").val());
 		user.set("displayName",$("#inputDisplayName").val());
+		user.set("total_career_score",0);
 
 		user.signUp(null, {
 			success : function(user) {

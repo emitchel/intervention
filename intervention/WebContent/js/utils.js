@@ -64,6 +64,8 @@ return  !(str === null || str === undefined || str == "null") && !(!str || 0 ===
 }
 
 Utils.getCurrentUser = function(){
+	//refreshing current user
+	Parse.User.current().fetch();
 	return Parse.User.current();
 }
 

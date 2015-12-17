@@ -50,7 +50,8 @@
    
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
+		  (<span class="career_score">0</span>)<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" >Settings</a></li>
 			<li><a href="javascript:Utils.logout()" >Logout</a></li>
@@ -128,6 +129,7 @@ $(document).ready(function() {
 	//setting username
 	var user = Parse.User.current();
 	$(".username").html(user.get("displayName"));
+	$(".career_score").html(user.get("total_career_score"));
 	
 });
 
@@ -166,6 +168,11 @@ $(".create").click(function(event) {
 	}
 	
 	function setSearchStatus(obj){
+	
+		function sendToManagerPage(){
+				Utils.goPage(Urls.MANAGE+ "?ownerId="+Utils.getCurrentUser().id+"&gameId="+uniqueId )
+		}
+		
 		$(".searching").slideUp("slow");
 		var joinGameBtn = $(".joingamebtn");
 		var joinGameWrapper = $(".join_game");
@@ -179,9 +186,16 @@ $(".create").click(function(event) {
 			var uniqueId = obj.get("unique_id");
 			var isStarted = obj.get("started");
 			var ownerName = obj.get("owner_name");
+			var isOwner = obj.get("owner_id") == Utils.getCurrentUser().id;
 			
-			if(!isStarted){
-			joinGameURL = "play.html?gameId=" +String(uniqueId);
+			
+			if(isOwner){
+				joinGameBtn.prop("disabled",true);
+				gameSearchStatus.html("You're the manager of this game! People are waiting on you! WTF! Taking you there in 5 seconds... ");
+				
+				setTimeout(sendToManagerPage,5000);
+			} else if(!isStarted){
+				joinGameURL = "play.html?gameId=" +String(uniqueId);
 				joinGameBtn.prop("disabled",false);
 				gameSearchStatus.html("<b><i>"+ownerName + "</i></b> is the owner of this game and it is active, join now!");
 			} else {
@@ -191,7 +205,7 @@ $(".create").click(function(event) {
 			
 		}else{
 			joinGameBtn.prop("disabled",true);
-			gameSearchStatus.html("Oops... game not found");
+			gameSearchStatus.html("Oops... game not found. Did you type in the correct code?");
 		}
 	}
 	
@@ -286,12 +300,11 @@ $(".create").click(function(event) {
 		
 		$(".game_created").slideDown("slow");
 		
-		
 		$(".generated_code").html(formatId(id));
 		
 		var user = Parse.User.current();
 		var userId = user.id;
-		var link="manage.landing.html?ownerId="+userId+"&gameId="+id;
+		var link=Urls.MANAGE + "?ownerId="+userId+"&gameId="+id;
 		manageURL = link;
 		
 		});
