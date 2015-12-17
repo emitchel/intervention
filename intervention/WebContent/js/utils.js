@@ -19,18 +19,15 @@ function Utils(){
 Utils.APP_ID = app_id;
 Utils.JS_KEY = js_key;
 
-Utils.GAME_ID_MIN = 0;
-Utils.GAME_ID_MAX = 100000000;//100 000 000
+Utils.GAME_ID_MIN = 100000000;
+Utils.GAME_ID_MAX = 999999999;//100 000 000
 
 
 //** DOM READY LOGIC
 $(document).ready(function() {
 	//Essential init call for Parse
 	Parse.initialize(Utils.APP_ID, Utils.JS_KEY);
-	
-	//Lets keep this closed on start up
-	$(".error").hide();
-	
+	//$(".error").hide();
 });
 
 
@@ -40,12 +37,12 @@ $(document).ready(function() {
 **/
 Utils.showError = function(errorMsg){
 
-	$(".error").html("<span class='error'>" + errorMsg + "</span>");
-	$(".error").show("slow");
+	$(".error").html(errorMsg );
+	$(".error").slideDown("slow");
 }
 
 Utils.hideError = function(){
-	$(".error").hide("slow");
+	$(".error").slideUp("slow");
 }
 
 /**
@@ -66,7 +63,9 @@ Utils.isValidString = function(str){
 return  !(str === null || str === undefined || str == "null") && !(!str || 0 === str.length) 
 }
 
-
+Utils.getCurrentUser = function(){
+	return Parse.User.current();
+}
 
 Utils.userLoggedIn = function(){
 	return Parse.User.current() !== null;

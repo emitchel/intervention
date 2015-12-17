@@ -43,3 +43,9 @@ background: #292929; /* For browsers that do not support gradients */
 font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
     font-size: 25px;
 }
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
