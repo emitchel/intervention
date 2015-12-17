@@ -183,7 +183,7 @@ $(".create").click(function(event) {
 			if(!isStarted){
 			joinGameUrl = "play.html?gameId=" +String(uniqueId);
 				joinGameBtn.prop("disabled",false);
-				gameSearchStatus.html(ownerName + " created this game and it is active, join now!");
+				gameSearchStatus.html("<b><i>"+ownerName + "</i></b> is the owner of this game and it is active, join now!");
 			} else {
 				joinGameBtn.prop("disabled",true);
 				gameSearchStatus.html("Cannot join game that has started");
