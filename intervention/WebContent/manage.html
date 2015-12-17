@@ -121,6 +121,8 @@ var owner;
 //interval timer objects
 var timer_getJoinedPlayers;
 
+var listOfPlayers = [];
+
 $(document).ready(function() {
 	if(!Utils.userLoggedIn()){
 		Utils.goPage(Urls.LOGIN);
@@ -173,27 +175,38 @@ function initGame(){
 	timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
 }
 
+
+function addPlayer(player){
+	var panel = '<div class="col-md-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS</div></div></div>'
+	panel.replace("NAME",player.get("displayName");
+	panel.replace("GOALS",player.get("total_career_score");
+	
+	if(player.id !==Utils.getCurrentUser(false).id && !Utils.contains(listOfPlayers,player){
+		listOfPlayers.push(player);
+		$(".player_wrapper").append(panel);
+	}
+	
+}
 function checkForJoinedPlayers(){
 	//get players
 	//append any NEW players (keep current ones in local stoage?
-	var panel = '<div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS</div></div>'
+	
 	var Users = Parse.Object.extend("User");
 		var query = new Parse.Query(Users);
 		query.equalTo("game_id", String(gameId));
 		query.find({
 		  success: function(results) {
-		  if(results.length>0){
-			 return getId(); 
-			} else {
-			idFound(nRandomID);
-			}
+			  for(var i=0;i<results.length;i++){
+				addPlayer(results[i];
+			  }
+			  timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
 		  },
 		  error: function(error) {
-			idFound(nRandomID);
+			Utils.showError(error.message);
 		  }
 		});
 	//starting the timer again
-	timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
+	
 }
 
 function EndGame(){

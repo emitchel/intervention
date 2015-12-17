@@ -63,9 +63,18 @@ Utils.isValidString = function(str){
 return  !(str === null || str === undefined || str == "null") && !(!str || 0 === str.length) 
 }
 
+//Deprecated
 Utils.getCurrentUser = function(){
 	//refreshing current user
 	Parse.User.current().fetch();
+	return Parse.User.current();
+}
+
+Utils.getCurrentUser = function(shouldFetch){
+	//refreshing current user
+	if(shouldFetch){
+		Parse.User.current().fetch();
+	}
 	return Parse.User.current();
 }
 
@@ -114,4 +123,14 @@ Utils.formatCode = function(id){
 		
 		return returnId;
 	
+}
+
+Utils.contains = function(a, obj) {
+    var i = a.length;
+    while (i--) {
+       if (a[i] === obj) {
+           return true;
+       }
+    }
+    return false;
 }
