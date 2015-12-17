@@ -78,6 +78,11 @@ Utils.logout = function(){
 	Utils.goPage(Urls.LOGIN);
 }
 
+Utils.setUserProperty = function(property,value){
+	Parse.User.current().set(property,value);
+	Parse.User.current().save();
+}
+
 Utils.sentEnterMethod = function(methodToCall){
 $(document).bind('keypress', function(e){
    if(e.which === 13) { // return
@@ -88,4 +93,25 @@ $(document).bind('keypress', function(e){
 
 Utils.getRandomInt = function(min,max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+Utils.formatCode = function(id){
+	//1234356789
+	//to 123 456 780
+		var returnId="";
+		//cast to string
+		id = String(id)
+		//split into char array
+		id = id.split("");
+		//iterate over each three and add a space in between
+		for(var i = 0; i<id.length; i++){
+			returnId+=id[i];
+			
+			//123
+			if((i+1)%3==0)
+				returnId+=" ";
+		}
+		
+		return returnId;
+	
 }

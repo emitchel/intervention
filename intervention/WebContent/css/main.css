@@ -42,10 +42,17 @@ background: #292929; /* For browsers that do not support gradients */
 .generated_code {
 font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
     font-size: 25px;
+	border: 1px solid #ccc;
+    background-color: #f8f8f8;
+	padding:8px;
 }
 
 .vcenter {
     display: inline-block;
     vertical-align: middle;
     float: none;
+}
+
+.fine {
+	font-size:8px;
 }

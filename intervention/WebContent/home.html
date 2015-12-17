@@ -250,25 +250,7 @@ $(".create").click(function(event) {
 		});
 	}
 	
-	//1234356789
-	//to 123 456 780
-	function formatId(id){
-		var returnId="";
-		//cast to string
-		id = String(id)
-		//split into char array
-		id = id.split("");
-		//iterate over each three and add a space in between
-		for(var i = 0; i<id.length; i++){
-			returnId+=id[i];
-			
-			//123
-			if((i+1)%3==0)
-				returnId+=" ";
-		}
-		
-		return returnId;
-	}
+	
 	
 	function makeActiveGame(id){
 	var Game = Parse.Object.extend("game");
@@ -297,23 +279,42 @@ $(".create").click(function(event) {
 		$(".loading").slideUp("slow",function(){
 		
 		makeActiveGame(id);
+		setUserCurrentGame(-1,id);
 		
 		$(".game_created").slideDown("slow");
 		
-		$(".generated_code").html(formatId(id));
+		$(".generated_code").html(Utils.formatCode(id));
 		
 		var user = Parse.User.current();
 		var userId = user.id;
-		var link=Urls.MANAGE + "?ownerId="+userId+"&gameId="+id;
+		var link=Urls.MANAGE + "?gameId="+id;
 		manageURL = link;
 		
 		});
 		
 	}
 	
+	function setUserCurrentGame(userid,gameid){
+		var User = Parse.Object.extend("User");
+		var query = new Parse.Query(User);
+		if(userid==-1){
+			userid = Utils.getCurrentUser().id;
+		}
+		
+		query.get(userid, {
+		  success: function(user) {
+			user.set("game_id",String(gameid));
+			user.save();
+		  },
+		  error: function(object, error) {
+			Utils.showError(error.message);
+		  }
+		});
+	}
+	
 	
 	function goToManagePage(){
-		alert(manageURL);
+		Utils.goPage(manageURL);
 	}
 	
 
