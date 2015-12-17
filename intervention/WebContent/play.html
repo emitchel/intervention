@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 
-<title>Manage Game</title>
-<meta name="description" content="Manage Game">
+<title>Play</title>
+<meta name="description" content="Play">
 <meta name="viewport" content="width=device-width">
 <!-- Material Design fonts -->
 <link rel="stylesheet"
@@ -47,15 +47,7 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-   <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manager Options<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="javascript:EndGame()" >End Game</a></li>
-			<li><a href="javascript:CloseAndDelete()">Close and Delete Game</a></li>
-          </ul>
-        </li>
-      </ul>
+ 
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
@@ -75,24 +67,11 @@
       <div class="col-md-12">
         <div class="bs-component">
           <div class="jumbotron">
-		  <h1>Welcome Manager</h1>
-		  You're responsible for the following...
-		  <ul>
-		  <li>Starting the game
-		  <li>Calculating results 
-		  <li>Moving to next question
-		  <li>Ending the game [Manager Options > End Game]
-		  </ul>
+		  <h1>Welcome <span class="username">[UserName]</span> </h1>
+		
           <h2>Game code</h2>
 			<h3><span class="generated_code"></span></h3><br>
-			<p>Link to game</p>
-			<span class="fine">User must be logged in</span>
-			<input type="text" class="link_to_game" style="width:100%" onclick="this.select()" />
-			
-			<br/><br/>
-			<p>Link to Main display screen </p>
-			<span class="fine">This screen is used to display the current question, scores, and players</span>
-			<input type="text" class="link_to_main" style="width:100%" onclick="this.select()" />
+			<span class="game_status"></span>
           </div>
         </div>
     </div>
@@ -102,12 +81,6 @@
 		<div class="col-md-12">
 		<div class="error alert alert-dismissible alert-danger" style="display:none" role="alert"></div>
 		</div>
-</div>
-<h2>Players Joined: <span class="num_of_players">0</span></h2>
-<div class="player_wrapper row show-grid"> 
-
-
-
 </div>
 
 
@@ -153,11 +126,11 @@ function grabObjects(){
 	query.first({
 	  success: function(object) {
 		game = object;
-		if(game.get("owner_id")!==Utils.getCurrentUser().id){
-			Utils.showError("You do not own this game, therefore you cannot manage");
+		if(game.get("owner_id")==Utils.getCurrentUser(false).id){
+			Utils.showError("You are the manager of this game! Go to the <a href='manage.html?gameId="+gameId+"'>Manager Page</a>");
 			return;
 		} else {
-			owner = Utils.getCurrentUser();
+			owner = Utils.getCurrentUser(false);
 		}
 		
 		initGame();
@@ -170,52 +143,19 @@ function grabObjects(){
 
 function initGame(){
 	if(game.get("started")){
-		Utils.goPage(Urls.MANAGE_PLAY+"?gameId="+game.get("unique_id"));
-	}
+		Utils.showError("This game has started, you cannot join now");
+		Utils.goPage(Urls.HOME);
+	} else {
 	
-	$(".link_to_game").val(window.location.href.split("/manage")[0]+"/"+Urls.PLAY + "?gameId=" + game.get("unique_id"));
-	$(".link_to_main").val(window.location.href.split("/manage")[0]+"/"+Urls.MAIN + "?gameId=" + game.get("unique_id"));
-	$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
-	
-	timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
-}
-
-
-function addPlayer(player){
-	var className = "label" + player.id;
-	var panel = '<div style="display:none" class="'+className+' col-md-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS career points</div></div></div>'
-	panel = panel.replace("NAME",player.get("displayName"));
-	panel = panel.replace("GOALS",player.get("total_career_score"));
-	
-	if(player.id !==Utils.getCurrentUser(false).id && !Utils.containsPlayer(listOfPlayers,player)){
-		listOfPlayers.push(player);
-		$(".player_wrapper").append(panel);
-		$(".num_of_players").html(listOfPlayers.length);
-		$("."+className).fadeIn()
+		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
+		
+		Utils.setUserProperty("game_id",gameId);
+		console.log("setting game_id for this user");
 	}
 	
 }
-function checkForJoinedPlayers(){
-	//get players
-	//append any NEW players (keep current ones in local stoage?
-	
-	var Users = Parse.Object.extend("User");
-		var query = new Parse.Query(Users);
-		query.equalTo("game_id", String(gameId));
-		query.find({
-		  success: function(results) {
-			  for(var i=0;i<results.length;i++){
-				addPlayer(results[i]);
-			  }
-			  timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
-		  },
-		  error: function(error) {
-			Utils.showError(error.message);
-		  }
-		});
-	//starting the timer again
-	
-}
+
+
 
 function EndGame(){
 	

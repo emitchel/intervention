@@ -125,10 +125,10 @@ Utils.formatCode = function(id){
 	
 }
 
-Utils.contains = function(a, obj) {
+Utils.containsPlayer = function(a, obj) {
     var i = a.length;
     while (i--) {
-       if (a[i] === obj) {
+       if (a[i].id == obj.id) {
            return true;
        }
     }
