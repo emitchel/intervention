@@ -38,193 +38,246 @@
 </script>
 </head>
 <body>
-<nav class="navbar_global navbar navbar-default navbar-static-top">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      
-      <a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention <i>Online</i></a>
-    </div>
+	<nav class="navbar_global navbar navbar-default navbar-static-top">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-   <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manager Options<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="javascript:EndGame()" >End Game</a></li>
-			<li><a href="javascript:CloseAndDelete()">Close and Delete Game</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
-		  (<span class="career_score">0</span>)<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#" >Settings</a></li>
-			<li><a href="javascript:Utils.logout()" >Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-<div class="container">
-<div class="row">
+				<a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention
+					<i>Online</i>
+				</a>
+			</div>
 
-      <div class="col-md-12">
-        <div class="bs-component">
-          <div class="jumbotron">
-		  <h1>Welcome Manager</h1>
-		  You're responsible for the following...
-		  <ul>
-		  <li>Starting the game
-		  <li>Calculating results 
-		  <li>Moving to next question
-		  <li>Ending the game [Manager Options > End Game]
-		  </ul>
-          <h2>Game code</h2>
-			<h3><span class="generated_code"></span></h3><br>
-			<p>Link to game</p>
-			<span class="fine">User must be logged in</span>
-			<input type="text" class="link_to_game" style="width:100%" onclick="this.select()" />
-			
-			<br/><br/>
-			<p>Link to Main display screen </p>
-			<span class="fine">This screen is used to display the current question, scores, and players</span>
-			<input type="text" class="link_to_main" style="width:100%" onclick="this.select()" />
-          </div>
-        </div>
-    </div>
-	
-</div>
-<div class="row">
-		<div class="col-md-12">
-		<div class="error alert alert-dismissible alert-danger" style="display:none" role="alert"></div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">Manager Options<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="javascript:EndGame()">End Game</a></li>
+						<li><a href="javascript:CloseAndDelete()">Close and
+								Delete Game</a></li>
+					</ul></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">Signed in as <span class="username">[UserName]</span>
+						(<span class="career_score">0</span>)<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Settings</a></li>
+						<li><a href="javascript:Utils.logout()">Logout</a></li>
+					</ul></li>
+			</ul>
 		</div>
-</div>
-<h2>Players Joined: <span class="num_of_players">0</span></h2>
-<div class="player_wrapper row show-grid"> 
+		<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<div class="bs-component">
+					<div class="jumbotron">
+						<h1>Welcome Manager</h1>
+						You're responsible for the following...
+						<ul>
+							<li>Starting the game
+							<li>Calculating results
+							<li>Moving to next question
+							<li>Ending the game [Manager Options > End Game]
+						</ul>
+						<h2>Game code</h2>
+						<h3>
+							<span class="generated_code"></span>
+						</h3>
+						<br>
+						<p>Link to game</p>
+						<span class="fine">User must be logged in</span> <input
+							type="text" class="link_to_game" style="width: 100%"
+							onclick="this.select()" /> <br /> <br />
+						<p>Link to Main display screen</p>
+						<span class="fine">This screen is used to display the
+							current question, scores, and players</span> <input type="text"
+							class="link_to_main" style="width: 100%" onclick="this.select()" />
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="error alert alert-dismissible alert-danger"
+					style="display: none" role="alert"></div>
+			</div>
+		</div>
+		<h2>
+			Players Joined: <span class="num_of_players">0</span>
+		</h2>
+		<div class="player_wrapper row show-grid"></div>
 
 
 
-</div>
 
-
-
-	
-</div>
+	</div>
 
 </body>
 <script>
-var gameId;
-var ownerId;
-//parse objects
-var game;
-var owner;
+	var gameId;
+	var ownerId;
+	//parse objects
+	var game;
+	var owner;
 
-//interval timer objects
-var timer_getJoinedPlayers;
+	//interval timer objects
+	var timer_getJoinedPlayers;
 
-var listOfPlayers = [];
+	var listOfPlayers = [];
+	var listOfAllPlayers = [];
 
-$(document).ready(function() {
-	if(!Utils.userLoggedIn()){
-		Utils.goPage(Urls.LOGIN);
-	}
-	
-	//setting username
-	var user = Parse.User.current();
-	$(".username").html(user.get("displayName"));
-	$(".career_score").html(user.get("total_career_score"));
-	
-	gameId = Utils.getParameterByName("gameId");
-	
-	grabObjects();
-});
-
-//gameId and ownerId must be set.
-function grabObjects(){
-
-	var currentgame = Parse.Object.extend("game");
-	var query = new Parse.Query(currentgame);
-	query.equalTo("unique_id", gameId);
-	query.equalTo("active",true);
-	query.first({
-	  success: function(object) {
-		game = object;
-		if(game.get("owner_id")!==Utils.getCurrentUser().id){
-			Utils.showError("You do not own this game, therefore you cannot manage");
-			return;
-		} else {
-			owner = Utils.getCurrentUser();
+	$(document).ready(function() {
+		if (!Utils.userLoggedIn()) {
+			Utils.goPage(Urls.LOGIN);
 		}
-		
-		initGame();
-	  },
-	  error: function(error) {
-		Utils.showError(error.message);
-	  }
+
+		//setting username
+		var user = Parse.User.current();
+		$(".username").html(user.get("displayName"));
+		$(".career_score").html(user.get("total_career_score"));
+
+		gameId = Utils.getParameterByName("gameId");
+
+		grabObjects();
 	});
-}
 
-function initGame(){
-	if(game.get("started")){
-		Utils.goPage(Urls.MANAGE_PLAY+"?gameId="+game.get("unique_id"));
+	//gameId and ownerId must be set.
+	function grabObjects() {
+
+		var currentgame = Parse.Object.extend("game");
+		var query = new Parse.Query(currentgame);
+		query.equalTo("unique_id", gameId);
+		query.equalTo("active", true);
+		query
+				.first({
+					success : function(object) {
+						game = object;
+						if (game.get("owner_id") !== Utils.getCurrentUser().id) {
+							Utils
+									.showError("You do not own this game, therefore you cannot manage");
+							setTimeout(Utils.goPage(Urls.HOME), 3000);
+							return;
+						} else {
+							owner = Utils.getCurrentUser();
+						}
+
+						initGame();
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
 	}
-	
-	$(".link_to_game").val(window.location.href.split("/manage")[0]+"/"+Urls.PLAY + "?gameId=" + game.get("unique_id"));
-	$(".link_to_main").val(window.location.href.split("/manage")[0]+"/"+Urls.MAIN + "?gameId=" + game.get("unique_id"));
-	$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
-	
-	timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
-}
 
+	function initGame() {
+		if (game.get("started")) {
+			Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"));
+		}
 
-function addPlayer(player){
-	var className = "label" + player.id;
-	var panel = '<div style="display:none" class="'+className+' col-md-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS career points</div></div></div>'
-	panel = panel.replace("NAME",player.get("displayName"));
-	panel = panel.replace("GOALS",player.get("total_career_score"));
-	
-	if(player.id !==Utils.getCurrentUser(false).id && !Utils.containsPlayer(listOfPlayers,player)){
-		listOfPlayers.push(player);
-		$(".player_wrapper").append(panel);
-		$(".num_of_players").html(listOfPlayers.length);
-		$("."+className).fadeIn()
+		$(".link_to_game").val(
+				window.location.href.split("/manage")[0] + "/" + Urls.PLAY
+						+ "?gameId=" + game.get("unique_id"));
+		$(".link_to_main").val(
+				window.location.href.split("/manage")[0] + "/" + Urls.MAIN
+						+ "?gameId=" + game.get("unique_id"));
+		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
+
+		timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers, 1000);
 	}
-	
-}
-function checkForJoinedPlayers(){
-	//get players
-	//append any NEW players (keep current ones in local stoage?
-	
-	var Users = Parse.Object.extend("User");
+
+	function addPlayer(player) {
+		var className = "label" + player.id;
+		var panel = '<div style="display:none" class="'+className+' col-md-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS career points</div></div></div>'
+		panel = panel.replace("NAME", player.get("displayName"));
+		panel = panel.replace("GOALS", player.get("total_career_score"));
+
+		if (player.id !== Utils.getCurrentUser(false).id
+				&& !Utils.containsPlayer(listOfPlayers, player)) {
+			listOfPlayers.push(player);
+			$(".player_wrapper").append(panel);
+			$("." + className).fadeIn()
+		}
+
+	}
+	function checkForJoinedPlayers() {
+		//get players
+		//append any NEW players (keep current ones in local stoage?
+
+		var Users = Parse.Object.extend("User");
 		var query = new Parse.Query(Users);
 		query.equalTo("game_id", String(gameId));
-		query.find({
-		  success: function(results) {
-			  for(var i=0;i<results.length;i++){
-				addPlayer(results[i]);
-			  }
-			  timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers,1000);
-		  },
-		  error: function(error) {
-			Utils.showError(error.message);
-		  }
-		});
-	//starting the timer again
-	
-}
+		query
+				.find({
+					success : function(results) {
+						//resetting
+						listOfAllPlayers = [];
+						for ( var i = 0; i < results.length; i++) {
+							addPlayer(results[i]);
+							if (results[i].id !== Utils.getCurrentUser(false).id) {
+								listOfAllPlayers.push(results[i]);
+							}
 
-function EndGame(){
-	
-}
+						}
 
-function CloseAndDelete(){
+						///need to check if anyone has left.
+						updateLabels(getPlayerIdsThatHaveGone(listOfPlayers,
+								listOfAllPlayers));
 
-}
-	
+						listOfPlayers = listOfPlayers.filter(function(el) {
 
+							return Utils.containsPlayer(listOfAllPlayers, el);
+						});
+
+						$(".num_of_players").html(listOfPlayers.length);
+						timer_getJoinedPlayers = setTimeout(
+								checkForJoinedPlayers, 1000);
+
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+		//starting the timer again
+
+	}
+
+	function updateLabels(list) {
+		for ( var i = 0; i < list.length; i++) {
+			var className = "label" + list[i];
+			$("." + className).fadeOut("slow", function() {
+				$("." + className).remove()
+			});
+		}
+	}
+
+	function getPlayerIdsThatHaveGone(currentList, actualList) {
+
+		var listOfIdsThatNoLongerExistAndNeedToBeDeleted = [];
+		for ( var i = 0; i < currentList.length; i++) {
+			if (!Utils.containsPlayer(actualList, currentList[i])) {
+				listOfIdsThatNoLongerExistAndNeedToBeDeleted
+						.push(currentList[i].id);
+			}
+		}
+		return listOfIdsThatNoLongerExistAndNeedToBeDeleted;
+	}
+
+	function EndGame() {
+
+	}
+
+	function CloseAndDelete() {
+
+	}
 </script>
 </html>

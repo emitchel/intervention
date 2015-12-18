@@ -92,6 +92,11 @@ Utils.setUserProperty = function(property,value){
 	Parse.User.current().save();
 }
 
+Utils.unsetProperty = function(property){
+	Parse.User.current().unset(property);
+	Parse.User.current().save();
+}
+
 Utils.sentEnterMethod = function(methodToCall){
 $(document).bind('keypress', function(e){
    if(e.which === 13) { // return
