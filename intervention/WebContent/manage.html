@@ -46,10 +46,14 @@
 				<a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention
 					<i>Online</i>
 				</a>
+				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				  </button>
 			</div>
-
-			<!-- Collect the nav links, forms, and other content for toggling -->
 			<ul class="nav navbar-nav navbar-right">
+			
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false">Manager Options<span class="caret"></span></a>
@@ -59,22 +63,24 @@
 								Delete Game</a></li>
 					</ul></li>
 			</ul>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false">Signed in as <span class="username">[UserName]</span>
-						(<span class="career_score">0</span>)<span class="caret"></span></a>
+						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="#">Settings</a></li>
 						<li><a href="javascript:Utils.logout()">Logout</a></li>
 					</ul></li>
 			</ul>
-		</div>
-		<!-- /.navbar-collapse -->
+			</div>
 		</div>
 		<!-- /.container-fluid -->
 	</nav>
-	<div class="container">
+	<div class="main container">
 		<div class="row">
 
 			<div class="col-md-12">
@@ -144,7 +150,6 @@
 		//setting username
 		var user = Parse.User.current();
 		$(".username").html(user.get("displayName"));
-		$(".career_score").html(user.get("total_career_score"));
 
 		gameId = Utils.getParameterByName("gameId");
 
@@ -197,9 +202,9 @@
 
 	function addPlayer(player) {
 		var className = "label" + player.id;
-		var panel = '<div style="display:none" class="'+className+' col-md-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body">GOALS career points</div></div></div>'
+		var panel = '<div style="display:none" class="'+className+' col-md-2"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="alert(STATS)">View Stats</a></div></div></div>'
 		panel = panel.replace("NAME", player.get("displayName"));
-		panel = panel.replace("GOALS", player.get("total_career_score"));
+		panel = panel.replace("STATS", "UPCOMING: " +Urls.STATS + "?userId=" + player.id);
 
 		if (player.id !== Utils.getCurrentUser(false).id
 				&& !Utils.containsPlayer(listOfPlayers, player)) {
@@ -273,11 +278,24 @@
 	}
 
 	function EndGame() {
-
+		
 	}
 
 	function CloseAndDelete() {
-
+		//delete game from table
+		//unset any user game_id that has this game set
+		game.destroy({
+		  success: function(myObject) {
+		  console.log("game deleted successfully");
+		  $(".main").html("Game has been deleted, click <a href='"+Urls.HOME+"'>here</a> to go home");
+		  },
+		  error: function(myObject, error) {
+			Utils.showError(error.message);
+		  }
+		});
+		
+		
 	}
+
 </script>
 </html>

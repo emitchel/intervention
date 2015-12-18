@@ -44,24 +44,37 @@
     <div class="navbar-header">
       
       <a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention <i>Online</i></a>
+	   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
-
+	
+	
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+				<a href="javascript:window.location.reload();">
+				Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon-class"></span>
+				</a>
+		</li>
+	</ul>
     <!-- Collect the nav links, forms, and other content for toggling -->
- 
+	<div class="navbar-collapse collapse navbar-responsive-collapse">
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
-		  (<span class="career_score">0</span>)<span class="caret"></span></a>
+		  <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" >Settings</a></li>
 			<li><a href="javascript:Utils.logout()" >Logout</a></li>
           </ul>
         </li>
       </ul>
+	  </div>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
 </nav>
-<div class="container">
+<div class="main container">
 <div class="row">
 
       <div class="col-md-12">
@@ -97,9 +110,11 @@ var game;
 var owner;
 
 //interval timer objects
-var timer_getJoinedPlayers;
+var check;
 
-var listOfPlayers = [];
+var listOfAllPlayers = [];
+var listOfQuestions = [];
+var listOfGuesses = [];
 
 $(document).ready(function() {
 	if(!Utils.userLoggedIn()){
@@ -109,7 +124,6 @@ $(document).ready(function() {
 	//setting username
 	var user = Parse.User.current();
 	$(".username").html(user.get("displayName"));
-	$(".career_score").html(user.get("total_career_score"));
 	
 	gameId = Utils.getParameterByName("gameId");
 	
@@ -126,14 +140,19 @@ function grabObjects(){
 	query.first({
 	  success: function(object) {
 		game = object;
-		if(game.get("owner_id")==Utils.getCurrentUser(false).id){
+		
+		if(game==undefined){
+			gameNonExistent();
+		}else if(game.get("owner_id")==Utils.getCurrentUser(false).id){
 			Utils.showError("You are the manager of this game! Go to the <a href='manage.html?gameId="+gameId+"'>Manager Page</a>");
-			return;
+			
+		} else if (Utils.getCurrentUser(false).get("game_id")!== game.get("unique_id") && game.get("started")){
+			Utils.showError("This game has started, you cannot join nowclick <a href='"+Urls.HOME+"'>here</a> to go home");
 		} else {
-			owner = Utils.getCurrentUser(false);
+			initGame();
 		}
 		
-		initGame();
+		
 	  },
 	  error: function(error) {
 		Utils.showError(error.message);
@@ -141,22 +160,175 @@ function grabObjects(){
 	});
 }
 
+function gameNonExistent(){
+	user = Utils.unsetProperty("game_id");
+	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home");
+}
+
 function initGame(){
-	if(game.get("started")){
-		Utils.showError("This game has started, you cannot join now");
-		Utils.goPage(Urls.HOME);
-	} else {
+	//if they weren't already a part of this game, and it's started.... they can't join!
+	
 	
 		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
 		
 		Utils.setUserProperty("game_id",gameId);
 		console.log("setting game_id for this user");
-	}
+		makeGameLock();
+		
+		check = setTimeout(update, 1000);
+	
 	
 }
 
+function makeGameLock(){
+console.log("making game lock")
+var GameLock = Parse.Object.extend("gameLock");
+var query = new Parse.Query(GameLock);
+query.equalTo("user",Utils.getCurrentUser(true));
+
+query.find(null, {
+  success: function(foundlock) {
+    if(foundlock==undefined){
+		//need to make it 
+		//(only if they've never been in a game)
+		var GameLock = Parse.Object.extend("gameLock");
+		var lock = new GameLock();
+		lock.set("user",Utils.getCurrentUser(false));
+		lock.set("game",game);
+		lock.set("locked",false);
+		lock.save();
+	} else {
+		//need to update it
+		//game
+		//blocked
+		
+		foundlock.set("game",game);
+		foundlock.set("locked",false);
+		foundlock.save();
+	}
+    
+  },
+  error: function(lock, error) {
+	Utils.showError(error.message);
+  }
+});
+}
+
+function update(){
+
+	var currentgame = Parse.Object.extend("game");
+	var query = new Parse.Query(currentgame);
+	query.equalTo("unique_id", gameId);
+	query.equalTo("active",true);
+	query.first({
+	  success: function(object) {
+		game = object;
+		
+		if(game==undefined){
+			gameNonExistent();
+		}else {
+			getUsersInGame();
+			
+		}
+		
+		
+	  },
+	  error: function(error) {
+		Utils.showError(error.message);
+	  }
+	});
+}
+
+function getUsersInGame(){
+if(listOfAllPlayers == undefined){
+	var Users = Parse.Object.extend("User");
+		var query = new Parse.Query(Users);
+		query.equalTo("game_id", String(gameId));
+		query
+				.find({
+					success : function(results) {
+						//resetting
+						listOfAllPlayers = [];
+						
+						for ( var i = 0; i < results.length; i++) {
+							listOfAllPlayers.push(results[i]);
+						}
+
+						getQuestions();
+						getGuesses();
+					//	check = setTimeout(update, 1000);
+
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+		}
+		//starting the timer again
+}
 
 
+function getQuestions(){
+	if(listOfQuestions==undefined){
+		var questions = Parse.Object.extend("questions");
+		var query = new Parse.Query(questions);
+		query
+				.find({
+					success : function(results) {
+						//resetting
+						listOfQuestions = [];
+						
+						for ( var i = 0; i < results.length; i++) {
+							listOfQuestions.push(results[i]);
+						}
+
+						
+
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+		}
+
+}
+
+function getGuesses(){
+	if(listOfGuesses == undefined){
+	var guesses = Parse.Object.extend("Guess");
+		var query = new Parse.Query(guesses);
+		query
+				.find({
+					success : function(results) {
+						//resetting
+						listOfGuesses = [];
+						
+						for ( var i = 0; i < results.length; i++) {
+							listOfGuesses.push(results[i]);
+						}
+
+						
+
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+	}
+}
+
+function setState(){
+	//this is where the current state should be set. 
+	//
+}
+
+function showScoreBoard(){
+	//query gameScores for scores with this game
+}
+
+function showHistory(){
+
+}
 
 	
 

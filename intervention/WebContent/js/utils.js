@@ -109,6 +109,10 @@ Utils.getRandomInt = function(min,max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+Utils.removeSpace = function(str){
+	return str.replace(/ /g,'');
+}
+
 Utils.formatCode = function(id){
 	//1234356789
 	//to 123 456 780
