@@ -86,15 +86,16 @@
 			<div class="col-md-12">
 				<div class="bs-component">
 					<div class="jumbotron">
+					<div class="row">
+						<div class="col-md-8">
 						<h1>Welcome Manager</h1>
 						You're responsible for the following...
 						<ul>
 							<li>Starting the game
 							<li>Calculating results
 							<li>Moving to next question
-							<li>Ending the game [Manager Options > End Game]
+							<li>Ending the game [Manager Options > End]
 						</ul>
-						<h2>Game code</h2>
 						<h3>
 							<span class="generated_code"></span>
 						</h3>
@@ -107,6 +108,11 @@
 						<span class="fine">This screen is used to display the
 							current question, scores, and players</span> <input type="text"
 							class="link_to_main" style="width: 100%" onclick="this.select()" />
+						</div>
+						<div class="col-md-4" style="float:right;padding-top:16px">
+							<a href="#" class="startgame btn btn-raised btn-primary">Start Game<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a>
+						</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -152,6 +158,8 @@
 		$(".username").html(user.get("displayName"));
 
 		gameId = Utils.getParameterByName("gameId");
+		
+		
 
 		grabObjects();
 	});
@@ -188,6 +196,10 @@
 		if (game.get("started")) {
 			Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"));
 		}
+		
+		$(".startgame").click(function(){
+			startGame();
+		});
 
 		$(".link_to_game").val(
 				window.location.href.split("/manage")[0] + "/" + Urls.PLAY
@@ -197,12 +209,33 @@
 						+ "?gameId=" + game.get("unique_id"));
 		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
 
-		timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers, 1000);
+		timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers, 100);
 	}
 
+	function startGame(){
+		if(game!==undefined){
+			game.set("started",true);
+			game.save(null, {
+				  success: function(newGame) {
+					// Execute any logic that should take place after the object is saved.
+					Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"))
+					console.log("game start");
+				  },
+				  error: function(newGame, error) {
+					// Execute any logic that should take place if the save fails.
+					// error is a Parse.Error with an error code and message.
+					Utils.showError(error.message);
+					console.log(error.message);
+				  }
+				});
+			
+			Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"))
+		}
+	}
+	
 	function addPlayer(player) {
 		var className = "label" + player.id;
-		var panel = '<div style="display:none" class="'+className+' col-md-2"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="alert(STATS)">View Stats</a></div></div></div>'
+		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="alert(STATS)">View Stats</a></div></div></div>'
 		panel = panel.replace("NAME", player.get("displayName"));
 		panel = panel.replace("STATS", "UPCOMING: " +Urls.STATS + "?userId=" + player.id);
 

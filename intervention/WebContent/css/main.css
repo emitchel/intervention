@@ -54,10 +54,15 @@ font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
 }
 
 .fine {
-	font-size:8px;
+	font-size:15px;
 }
 
 .attached_game_link {
 	    font-weight: bold;
     color: #DEFF00
 }
+
+.game_status{
+	font-size:35px;
+}
+
