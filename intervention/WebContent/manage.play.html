@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Manage Game</title>
+<meta name="description" content="Manage Game">
+<meta name="viewport" content="width=device-width">
+<!-- Material Design fonts -->
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+	type="text/css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+
+
+
+<!-- Bootstrap Material Design -->
+<link
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="css/bootstrap-material-design.css" rel="stylesheet">
+<link href="css/ripples.min.css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet">
+
+<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/ripples.min.js"></script>
+<script type="text/javascript" src="js/material.min.js"></script>
+
+<script type="text/javascript" src="js/urls.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript"
+	src="http://www.parsecdn.com/js/parse-latest.js"></script>
+
+<script>
+	$.material.init();
+</script>
+</head>
+<body>
+	<nav class="navbar_global navbar navbar-default navbar-static-top">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+
+				<a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention
+					<i>Online</i>
+				</a>
+				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				  </button>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+			
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">Manager Options<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="javascript:EndGame()">End Game</a></li>
+						<li><a href="javascript:CloseAndDelete()">Close and
+								Delete Game</a></li>
+					</ul></li>
+			</ul>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">Signed in as <span class="username">[UserName]</span>
+						<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Settings</a></li>
+						<li><a href="javascript:Utils.logout()">Logout</a></li>
+					</ul></li>
+			</ul>
+			</div>
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+	<div class="main container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<div class="bs-component">
+					<div class="jumbotron">
+					<div class="row">
+						<div class="col-md-8">
+						<h1>Welcome Manager</h1>
+						You're responsible for the following...
+						<ul>
+							<li>Starting the game
+							<li>Calculating results
+							<li>Moving to next question
+							<li>Ending the game [Manager Options > End]
+						</ul>
+						<h3>
+							<span class="generated_code"></span>
+						</h3>
+						<br>
+						<p>Link to game</p>
+						<span class="fine">User must be logged in</span> <input
+							type="text" class="link_to_game" style="width: 100%"
+							onclick="this.select()" /> <br /> <br />
+						<p>Link to Main display screen</p>
+						<span class="fine">This screen is used to display the
+							current question, scores, and players</span> <input type="text"
+							class="link_to_main" style="width: 100%" onclick="this.select()" />
+						</div>
+						<div class="col-md-4" style="float:right;padding-top:16px">
+							<a href="#" class="startgame btn btn-raised btn-primary">Start Game<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="error alert alert-dismissible alert-danger"
+					style="display: none" role="alert"></div>
+			</div>
+		</div>
+		<h2>
+			Players Joined: <span class="num_of_players">0</span>
+		</h2>
+		<div class="player_wrapper row show-grid"></div>
+
+
+
+
+	</div>
+
+</body>
+<script>
+	var gameId;
+	var ownerId;
+	//parse objects
+	var game;
+	var owner;
+
+	//interval timer objects
+	var timer_getJoinedPlayers;
+
+	var listOfPlayers = [];
+	var listOfAllPlayers = [];
+
+	$(document).ready(function() {
+		if (!Utils.userLoggedIn()) {
+			Utils.goPage(Urls.LOGIN);
+		}
+
+		//setting username
+		var user = Parse.User.current();
+		$(".username").html(user.get("displayName"));
+
+		gameId = Utils.getParameterByName("gameId");
+		
+		
+
+		grabObjects();
+	});
+
+	//gameId and ownerId must be set.
+	function grabObjects() {
+
+		var currentgame = Parse.Object.extend("game");
+		var query = new Parse.Query(currentgame);
+		query.equalTo("unique_id", gameId);
+		query.equalTo("active", true);
+		query
+				.first({
+					success : function(object) {
+						game = object;
+						if (game.get("owner_id") !== Utils.getCurrentUser().id) {
+							Utils
+									.showError("You do not own this game, therefore you cannot manage");
+							setTimeout(Utils.goPage(Urls.HOME), 3000);
+							return;
+						} else {
+							owner = Utils.getCurrentUser();
+						}
+
+						initGame();
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+	}
+
+	function initGame() {
+		if (game.get("started")) {
+			Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"));
+		}
+		
+		$(".startgame").click(function(){
+			startGame();
+		});
+
+		$(".link_to_game").val(
+				window.location.href.split("/manage")[0] + "/" + Urls.PLAY
+						+ "?gameId=" + game.get("unique_id"));
+		$(".link_to_main").val(
+				window.location.href.split("/manage")[0] + "/" + Urls.MAIN
+						+ "?gameId=" + game.get("unique_id"));
+		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
+
+		timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers, 100);
+	}
+
+	function startGame(){
+		if(game!==undefined){
+			game.set("started",true);
+			game.save(null, {
+				  success: function(newGame) {
+					// Execute any logic that should take place after the object is saved.
+					Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"))
+					console.log("game start");
+				  },
+				  error: function(newGame, error) {
+					// Execute any logic that should take place if the save fails.
+					// error is a Parse.Error with an error code and message.
+					Utils.showError(error.message);
+					console.log(error.message);
+				  }
+				});
+			
+			Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"))
+		}
+	}
+	
+	function addPlayer(player) {
+		var className = "label" + player.id;
+		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="alert(STATS)">View Stats</a></div></div></div>'
+		panel = panel.replace("NAME", player.get("displayName"));
+		panel = panel.replace("STATS", "UPCOMING: " +Urls.STATS + "?userId=" + player.id);
+
+		if (player.id !== Utils.getCurrentUser(false).id
+				&& !Utils.containsPlayer(listOfPlayers, player)) {
+			listOfPlayers.push(player);
+			$(".player_wrapper").append(panel);
+			$("." + className).fadeIn()
+		}
+
+	}
+	function checkForJoinedPlayers() {
+		//get players
+		//append any NEW players (keep current ones in local stoage?
+
+		var Users = Parse.Object.extend("User");
+		var query = new Parse.Query(Users);
+		query.equalTo("game_id", String(gameId));
+		query
+				.find({
+					success : function(results) {
+						//resetting
+						listOfAllPlayers = [];
+						for ( var i = 0; i < results.length; i++) {
+							addPlayer(results[i]);
+							if (results[i].id !== Utils.getCurrentUser(false).id) {
+								listOfAllPlayers.push(results[i]);
+							}
+
+						}
+
+						///need to check if anyone has left.
+						updateLabels(getPlayerIdsThatHaveGone(listOfPlayers,
+								listOfAllPlayers));
+
+						listOfPlayers = listOfPlayers.filter(function(el) {
+
+							return Utils.containsPlayer(listOfAllPlayers, el);
+						});
+
+						$(".num_of_players").html(listOfPlayers.length);
+						timer_getJoinedPlayers = setTimeout(
+								checkForJoinedPlayers, 1000);
+
+					},
+					error : function(error) {
+						Utils.showError(error.message);
+					}
+				});
+		//starting the timer again
+
+	}
+
+	function updateLabels(list) {
+		for ( var i = 0; i < list.length; i++) {
+			var className = "label" + list[i];
+			$("." + className).fadeOut("slow", function() {
+				$("." + className).remove()
+			});
+		}
+	}
+
+	function getPlayerIdsThatHaveGone(currentList, actualList) {
+
+		var listOfIdsThatNoLongerExistAndNeedToBeDeleted = [];
+		for ( var i = 0; i < currentList.length; i++) {
+			if (!Utils.containsPlayer(actualList, currentList[i])) {
+				listOfIdsThatNoLongerExistAndNeedToBeDeleted
+						.push(currentList[i].id);
+			}
+		}
+		return listOfIdsThatNoLongerExistAndNeedToBeDeleted;
+	}
+
+	function EndGame() {
+		
+	}
+
+	function CloseAndDelete() {
+		//delete game from table
+		//unset any user game_id that has this game set
+		game.destroy({
+		  success: function(myObject) {
+		  console.log("game deleted successfully");
+		  $(".main").html("Game has been deleted, click <a href='"+Urls.HOME+"'>here</a> to go home");
+		  },
+		  error: function(myObject, error) {
+			Utils.showError(error.message);
+		  }
+		});
+		
+		
+	}
+
+</script>
+</html>

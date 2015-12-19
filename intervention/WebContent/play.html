@@ -1,135 +1,192 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 
-<title>Play</title>
-<meta name="description" content="Play">
-<meta name="viewport" content="width=device-width">
-<!-- Material Design fonts -->
-<link rel="stylesheet"
+	<title>Play</title>
+	<meta name="description" content="Play">
+	<meta name="viewport" content="width=device-width">
+	<!-- Material Design fonts -->
+	<link rel="stylesheet"
 	href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
 	type="text/css">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
 
 
 
-<!-- Bootstrap Material Design -->
-<link
+	<!-- Bootstrap Material Design -->
+	<link
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="css/bootstrap-material-design.css" rel="stylesheet">
-<link href="css/ripples.min.css" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
+	<link href="css/bootstrap-material-design.css" rel="stylesheet">
+	<link href="css/ripples.min.css" rel="stylesheet">
+	<link href="css/main.css" rel="stylesheet">
 
-<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
-<script type="text/javascript" src="js/bootstrap.js"></script>
-<script type="text/javascript" src="js/ripples.min.js"></script>
-<script type="text/javascript" src="js/material.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/ripples.min.js"></script>
+	<script type="text/javascript" src="js/material.min.js"></script>
 
-<script type="text/javascript" src="js/urls.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript"
+	<script type="text/javascript" src="js/urls.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript"
 	src="http://www.parsecdn.com/js/parse-latest.js"></script>
 
-<script>
+	<script>
 	$.material.init();
-</script>
+	</script>
 </head>
-<body>
-<nav class="navbar_global navbar navbar-default navbar-static-top">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      
-      <a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention <i>Online</i></a>
-	   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-	
-	
-	<ul class="nav navbar-nav navbar-right">
-		<li>
-				<a href="javascript:window.location.reload();">
-				Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon-class"></span>
-				</a>
-		</li>
-	</ul>
-    <!-- Collect the nav links, forms, and other content for toggling -->
-	<div class="navbar-collapse collapse navbar-responsive-collapse">
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
-		  <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#" >Settings</a></li>
-			<li><a href="javascript:Utils.logout()" >Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-	  </div>
-    </div><!-- /.navbar-collapse -->
-</nav>
-<div class="main container">
-<div class="row">
+<body >
 
-      <div class="col-md-12">
-        <div class="bs-component">
-          <div class="jumbotron">
-		  <div class="row">
-				<div class="col-md-8">
-			<h1>Welcome <span class="username">[UserName]</span> </h1>
-			<h3>Game code</h3>
-				<h3><span class="generated_code"></span></h3><br>
+	<nav class="navbar_global navbar navbar-default navbar-static-top">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+
+				<a class="navbar-brand" href="javascript:Utils.goPage(Urls.HOME);">Intervention <i>Online</i></a>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
 			</div>
-			<div class="col-md-4">
-			<a href="#" class="btn btn-raised btn-default" >Scoreboard</a>
-			<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
-			</div>
-			</div>
+
+
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="javascript:window.location.reload();">
+						Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon-class"></span>
+					</a>
+				</li>
+			</ul>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Signed in as <span class="username">[UserName]</span> 
+							<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#" >Settings</a></li>
+								<li><a href="javascript:Utils.logout()" >Logout</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+		<div class="main container">
 			<div class="row">
-			
 				<div class="col-md-12">
-				<hr/>
-					<span class="game_status">Waiting for  <span class="manager">[Manager]</span> to start the game</span>
-					<div class="question" style="display:none"></div>
+					<div class="error alert alert-dismissible alert-danger" style="display:none" role="alert"></div>
+
 				</div>
 			</div>
-          </div>
-        </div>
-    </div>
-	
-</div>
-<div class="row">
-		<div class="col-md-12">
-		<div class="error alert alert-dismissible alert-danger" style="display:none" role="alert"></div>
+			<div class="row">
+
+				<div class="col-md-12">
+					<div class="user_game_status" style="display:none">
+
+					</div>
+					<div class="bs-component">
+						<div class="jumbotron">
+							<div class="row">
+								<div class="col-md-8">
+									<h1>Welcome <span class="username"></span>  </h1>
+									<h3>Game code</h3>
+									<h3><span class="generated_code"></span></h3><br>
+								</div>
+								<div class="col-md-4">
+
+									<a href="#" class="btn btn-raised btn-default" >Scoreboard</a>
+									<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
+
+								</div>
+							</div>
+							<div class="row">
+
+								<div class="col-md-12">
+									<hr/>
+									<div class="alert alert-info">
+										  <span class="game_status" style="display:none"></span>
+										</div>
+									<blockquote>
+										  <p><span class="question" style="display:none"></span></p>
+										</blockquote>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+
 		
+			<div class="row">
+				<div class="col-xs-8">
+				<div class="players dropdown">
+					  <button  disabled class="playersbutton btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <span class="player_selected"> Who best fits this description?</span>
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="players_selection dropdown-menu" aria-labelledby="dropdownMenu1">
+					  </ul>
+					</div>
+				
+				<div class="guesses dropdown">
+					  <button   disabled  class="guessesbutton btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <span class="guess">How many do you think will choose you?</span>
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					    <li><a href="javascript:guessSelected('none')" >None</a></li>
+						<li><a href="javascript:guessSelected('some')" >Some</a></li>
+						<li><a href="javascript:guessSelected('most')" >Most</a></li>
+						<li><a href="javascript:guessSelected('all')" >All</a></li>
+					  </ul>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<button   disabled  onclick="javascript:lockIn()" class="lockbutton btn btn-raised btn-primary btn-lg" ><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> <span class="glyphicon-class">Lock</span></button>
+					
+				</div>
+			</div>
+			
+
+
+
+
 		</div>
-</div>
 
-
-
-	
-</div>
-
-</body>
-<script>
-var gameId;
-var ownerId;
+	</body>
+	<script>
+	var gameId;
+	var ownerId;
 //parse objects
 var game;
 var owner;
+var currentquestion;
 
 //interval timer objects
 var check;
+var waiting = false;
 
 var listOfAllPlayers = [];
 var listOfQuestions = [];
 var listOfGuesses = [];
+
+//the person they chose best fits the description
+var selectedPlayer;
+//their guess as to how many will choose them
+var playerGuess;
+
+var timeToPlay = "<strong>Time to play!</strong><ul><li>Read the description below</li><li>Choose who you think fits the description</li><li>Roughly guess how many will choose you</li><li>Then lock in your selection!</li></ul>";
+
+var answerLockedIn = "<strong>Locked In!</strong> You've locked in, now wait for the manager to calculate results"
+
+var calculatingResults = "<strong>Manager is calculating results!</strong>"
 
 $(document).ready(function() {
 	if(!Utils.userLoggedIn()){
@@ -153,29 +210,31 @@ function grabObjects(){
 	query.equalTo("unique_id", gameId);
 	query.equalTo("active",true);
 	query.first({
-	  success: function(object) {
-		game = object;
-		
-		if(game==undefined){
-			gameNonExistent();
-		}else if(game.get("owner_id")==Utils.getCurrentUser(false).id){
-			Utils.showError("You are the manager of this game! Go to the <a href='manage.html?gameId="+gameId+"'>Manager Page</a>");
+		success: function(object) {
+			game = object;
+
+			if(game==undefined){
+				gameNonExistent();
+			}else if(game.get("owner_id")==Utils.getCurrentUser(false).id){
 			
-		} else if (Utils.getCurrentUser(false).get("game_id")!== game.get("unique_id") && game.get("started")){
-			Utils.showError("This game has started, you cannot join nowclick <a href='"+Urls.HOME+"'>here</a> to go home");
-		} else {
-			initGame();
+				$(".main").html("You are the manager of this game! Go to the <a href='manage.html?gameId="+gameId+"'>Manager Page</a>");
+
+			} else if (Utils.getCurrentUser(false).get("game_id")!== game.get("unique_id") && game.get("started")){
+				Utils.showError("This game has started, you cannot join now click <a href='"+Urls.HOME+"'>here</a> to go home");
+			} else {
+				initGame();
+			}
+
+
+		},
+		error: function(error) {
+			Utils.showError(error.message);
 		}
-		
-		
-	  },
-	  error: function(error) {
-		Utils.showError(error.message);
-	  }
 	});
 }
 
 function gameNonExistent(){
+
 	user = Utils.unsetProperty("game_id");
 	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home");
 }
@@ -184,82 +243,76 @@ function initGame(){
 	//if they weren't already a part of this game, and it's started.... they can't join!
 	
 	
-		$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
-		
-		Utils.setUserProperty("game_id",gameId);
-		console.log("setting game_id for this user");
-		makeGameLock();
-		
-		update();
+	$(".generated_code").html(Utils.formatCode(game.get("unique_id")));
+
+	Utils.setUserProperty("game_id",gameId);
+	console.log("setting game_id for this user");
+	makeGameLock();
+
+	update();
 	
 	
 }
 
 function makeGameLock(){
-console.log("making game lock")
-var GameLock = Parse.Object.extend("gameLocks");
-var query = new Parse.Query(GameLock);
-query.equalTo("user",Utils.getCurrentUser(true));
+	console.log("making game lock")
+	var GameLock = Parse.Object.extend("gameLocks");
+	var query = new Parse.Query(GameLock);
+	query.equalTo("user",Utils.getCurrentUser(true));
 
-query.first({
-  success: function(foundlock) {
-    if(foundlock==undefined || foundlock.length==0){
-		//need to make it 
-		//(only if they've never been in a game)
-		var GameLock = Parse.Object.extend("gameLocks");
-		var lock = new GameLock();
-		var relation = lock.relation("game");
-		//lock.set("game",game);
-		relation.add(game);
-		
-		relation = lock.relation("user");
-		relation.add(Utils.getCurrentUser(false));
-		//lock.set("user",Utils.getCurrentUser(false));
-		
-		lock.set("locked",false);
-		lock.save(null, {
-		  success: function(newGame) {
-			// Execute any logic that should take place after the object is saved.
-			console.log("lock created");
-		  },
-		  error: function(newGame, error) {
-			// Execute any logic that should take place if the save fails.
-			// error is a Parse.Error with an error code and message.
-			console.log(error.message)
-		  }
-		});
+	query.first({
+		success: function(foundlock) {
+					if(foundlock==undefined || foundlock.length==0){
+				//need to make it 
+				//(only if they've never been in a game)
+				var GameLock = Parse.Object.extend("gameLocks");
+				var lock = new GameLock();
+				lock.set("game",game);
+				lock.set("user",Utils.getCurrentUser(false));
+				
+				
+				lock.set("locked",false);
+				lock.save(null, {
+					success: function(newGame) {
+					// Execute any logic that should take place after the object is saved.
+					console.log("lock created");
+				},
+				error: function(newGame, error) {
+					// Execute any logic that should take place if the save fails.
+					// error is a Parse.Error with an error code and message.
+					console.log(error.message)
+				}
+			});
 	} else {
 		//need to update it
 		//game
 		//blocked
 		
 		
-		var relation = foundlock.relation("game");
-		relation.add(game);
-		
-		relation = foundlock.relation("user");
-		relation.add(Utils.getCurrentUser(false));
+		foundlock.set("game",game);
+		foundlock.set("user",Utils.getCurrentUser(false));
 		
 		foundlock.set("locked",false);
 		foundlock.save(null, {
-			  success: function(newGame) {
+			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
 				console.log("lock updated");
-			  },
-			  error: function(newGame, error) {
+			},
+			error: function(newGame, error) {
 				// Execute any logic that should take place if the save fails.
 				// error is a Parse.Error with an error code and message.
 				console.log(error.message)
-			  }
-			});
+			}
+		});
 	}
-    
-  },
-  error: function(lock, error) {
+
+},
+error: function(lock, error) {
 	Utils.showError(error.message);
-  }
+}
 });
 }
+
 
 function update(){
 
@@ -267,45 +320,69 @@ function update(){
 	var query = new Parse.Query(currentgame);
 	query.equalTo("unique_id", gameId);
 	query.equalTo("active",true);
+	query.include("current_question");
 	query.first({
-	  success: function(object) {
-		game = object;
-		
-		if(game==undefined){
-			gameNonExistent();
-			return;
-		} else if(game.get("started")){
-		//get question
-		//enable buttons
-		
-		//get everything ONCE
-		getUsersInGame();
-		getQuestions();
-		getGuesses();
-		
-		} else {
-		//show "waiting on manager"
-		$(".manager").html(game.get("owner_name"))
-		check = setTimeout(update, 1000);
+		success: function(object) {
+			game = object;
+
+			if(game==undefined){
+				gameNonExistent();
+				return;
+			} else if(game.get("started") && game.get("current_question") !== undefined){
+				//get question
+				//enable buttons
+				
+				//get everything ONCE
+				getUsersInGame();
+				showQuestion(game.get("current_question"));
+				getGuesses();
+				setSelectedDisabled(false)
+				updateStatus(timeToPlay)
+
+				console.log("game has started, setting data");
+
+			} else {
+				//show "waiting on manager"
+				var manager = game.get("owner_name");
+				console.log("game not started yet");
+
+				if(!waiting){
+				updateStatus("<strong>Hold Up!</strong> This game hasn't started yet, waiting on " + manager + " to start");
+					waiting=true;
+				}
+				check = setTimeout(update, 1000);
+			}
+
+
+		},
+		error: function(error) {
+			Utils.showError(error.message);
 		}
-		
-		
-	  },
-	  error: function(error) {
-		Utils.showError(error.message);
-	  }
 	});
 }
 
+function playerChosen(id){
+	selectedPlayer = listOfAllPlayers[id];
+	$(".player_selected").html(selectedPlayer.get("displayName"));
+}
 
+function populatePlayers(){
+
+ var dropdown = $(".players_selection");
+ for(var i =0; i< listOfAllPlayers.length;i++){
+ 	var item = '<li><a href="javascript:playerChosen('+i+')" class="player_name">NAME</a></li>';
+ 	item = item.replace("NAME",listOfAllPlayers[i].get("displayName"));
+ 	dropdown.append(item);
+ }
+}
 
 function getUsersInGame(){
 	var Users = Parse.Object.extend("User");
-		var query = new Parse.Query(Users);
-		query.equalTo("game_id", String(gameId));
-		query
-				.find({
-					success : function(results) {
+	var query = new Parse.Query(Users);
+	query.equalTo("game_id", String(gameId));
+	query
+	.find({
+		success : function(results) {
 						//resetting
 						listOfAllPlayers = [];
 						
@@ -313,7 +390,7 @@ function getUsersInGame(){
 							listOfAllPlayers.push(results[i]);
 						}
 						
-						 
+						populatePlayers();
 
 						
 
@@ -322,75 +399,150 @@ function getUsersInGame(){
 						Utils.showError(error.message);
 					}
 				});
-		
+
 		//starting the timer again
-}
+	}
 
-function showQuestion(){
-	//game must be started and a question selected
-	//if current size of questions == questions in drop down - don't populate
-}
+	function updateStatus(msg){
+		var status = $(".game_status");
+		if(status.is(":visible")){
+			status.fadeOut("fast",function(){
 
-function getQuestions(){
-	if(listOfQuestions.length==0){
-		var questions = Parse.Object.extend("questions");
-		var query = new Parse.Query(questions);
-		query
-				.find({
-					success : function(results) {
-						//resetting
-						listOfQuestions = [];
-						
-						for ( var i = 0; i < results.length; i++) {
-							listOfQuestions.push(results[i]);
-						}
-
-						showQuestion();
-
-					},
-					error : function(error) {
-						Utils.showError(error.message);
-					}
-				});
+				status.html(msg)
+				status.fadeIn("fast");
+			})
 		} else {
-			showQuestion();
+			status.html(msg)
+				status.fadeIn("fast");
+		}	
+	}
+
+	function updateUserGameStatus(msg){
+		var alert = '<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button> MESSAGE	</div>'
+
+		alert = alert.replace("MESSAGE",msg);
+
+		var wrapper = $(".user_game_status");
+
+		if(wrapper.is(":visible")){
+			wrapper.slideUp("slow",function(){
+				wrapper.html(alert);
+				wrapper.slideDown("slow");
+			})
+		} else {
+			wrapper.html(alert);
+			wrapper.slideDown("slow");
+		
 		}
 
+	}
+
+	function showQuestion(question){
+
+		currentquestion = question;
+
+		var questionDiv = $(".question");
+
+		if(questionDiv.is(":visible")){
+			questionDiv.slideUp("slow",function(){
+				questionDiv.html(question.get("question"));
+				questionDiv.slideDown("slow");
+			})
+		} else {
+			questionDiv.html(question.get("question"));
+			questionDiv.slideDown("slow");
+		
+		}
+
+		
+
+			
+	}
+
+// function getQuestions(){
+// 	if(listOfQuestions.length==0){
+// 		var questions = Parse.Object.extend("questions");
+// 		var query = new Parse.Query(questions);
+// 		query
+// 		.find({
+// 			success : function(results) {
+// 						//resetting
+// 						listOfQuestions = [];
+						
+// 						for ( var i = 0; i < results.length; i++) {
+// 							listOfQuestions.push(results[i]);
+// 						}
+
+// 						showQuestion(game.get("current_question"));
+
+// 					},
+// 					error : function(error) {
+// 						Utils.showError(error.message);
+// 					}
+// 				});
+// 	} else {
+// 		showQuestion();
+// 	}
+
+// }
+
+function guessSelected(guess){
+	//if current size of guesses == size of guesses in drop down, don't populate
+	for(var i = 0; i<listOfGuesses.length ; i++){
+		if(listOfGuesses[i].get("text").toUpperCase() == guess.toUpperCase()){
+			playerGuess = listOfGuesses[i];
+			//breaking the loop
+			i=listOfGuesses.length;
+		}
+	}
+
+	$(".guess").html(playerGuess.get("text"));
+
 }
 
-function showGuesses(){
-	//if current size of guesses == size of guesses in drop down, don't populate
-}
+
+
 
 function getGuesses(){
 
 	
 	if(listOfGuesses.length==0){
-	var guesses = Parse.Object.extend("Guess");
+		var guesses = Parse.Object.extend("Guess");
 		var query = new Parse.Query(guesses);
 		query
-				.find({
-					success : function(results) {
+		.find({
+			success : function(results) {
 						//resetting
 						listOfGuesses = [];
 						
 						for ( var i = 0; i < results.length; i++) {
 							listOfGuesses.push(results[i]);
 						}
-				
-						showGuesses();
+
+						
 
 					},
 					error : function(error) {
 						Utils.showError(error.message);
 					}
 				});
-	} else {
-		showGuesses();
-	}
+	} 
 }
 
 
+function resetButtons(){
+
+$(".player_selected").html("Who best fits this description");
+$(".guess").html("How many do you think will choose you?")
+playerGuess = undefined;
+selectedPlayer = undefined;
+}
+
+function setSelectedDisabled(bEnabled){
+	$('.guessesbutton').prop('disabled', bEnabled);
+	$('.playersbutton').prop('disabled', bEnabled);
+	$('.lockbutton').prop('disabled', bEnabled);
+}
 
 function setState(){
 	//this is where the current state should be set. 
@@ -409,7 +561,26 @@ function showHistory(){
 	//sam received 3 votes
 }
 
-	
+function lockIn(){
+	//as long as playerGuess and selectedPlayer aren't undefined
+	//check game.get("calculating_results") == false.
+	//set gameLock where user == this.user and set "locked" = true
+	//disable buttons and show ""
+
+	if(playerGuess==undefined || selectedPlayer == undefined){
+		Utils.showError("<strong>Woops!</strong> Select a player and your guess before locking in!")
+		return;
+	}
+
+
+
+	//after we locked (OR) calculating_results = true. 
+	//we need to start a timer to check the status of the game to see if 
+	//to see when calculating_results = false then show the next question (ASSUMING ITS BEEN SET ALREADY)
+	//and enable all buttons
+}
+
+
 
 </script>
 </html>

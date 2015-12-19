@@ -134,6 +134,10 @@ $(document).ready(function() {
 		register();
 
 	});
+
+	$('#display-name-modal').on('shown', function() {
+        Utils.sentEnterMethod(register);
+    })
 	
 	
 	function checkForm(){

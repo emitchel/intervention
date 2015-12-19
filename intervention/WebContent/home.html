@@ -307,6 +307,7 @@ $(".create").click(function(event) {
 	newGame.set("owner_name",Utils.getCurrentUser().get("displayName"));
 	newGame.set("active", true);
 	newGame.set("started",false);
+	newGame.set("calculating_results",false);
 
 	newGame.save(null, {
 	  success: function(newGame) {
