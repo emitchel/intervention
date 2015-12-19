@@ -95,6 +95,9 @@
 									<h1>Welcome <span class="username"></span>  </h1>
 									<h3>Game code</h3>
 									<h3><span class="generated_code"></span></h3><br>
+									<h3>Current Score</h3>
+									<h3><span class="player_score">0</span></h3><br>
+
 								</div>
 								<div class="col-md-4">
 
@@ -110,9 +113,7 @@
 									<div class="alert alert-info">
 										  <span class="game_status" style="display:none"></span>
 										</div>
-									<blockquote>
-										  <p><span class="question" style="display:none"></span></p>
-										</blockquote>
+									
 									
 								</div>
 							</div>
@@ -121,9 +122,17 @@
 				</div>
 
 			</div>
+<div class="bs-component">
+						<div class="jumbotron">
 
+			<div class="row">
+				<div class="col-md-12">
 
-		
+					
+					  <p><span class="question" style="display:none"></span></p>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-xs-8">
 				<div class="players dropdown">
@@ -153,6 +162,8 @@
 					
 				</div>
 			</div>
+				</div>
+			</div>
 			
 
 
@@ -168,6 +179,7 @@
 var game;
 var owner;
 var currentquestion;
+var oldquestion;
 
 //interval timer objects
 var check;
@@ -176,6 +188,8 @@ var waiting = false;
 var listOfAllPlayers = [];
 var listOfQuestions = [];
 var listOfGuesses = [];
+
+var score=0;
 
 //the person they chose best fits the description
 var selectedPlayer;
@@ -247,14 +261,14 @@ function initGame(){
 
 	Utils.setUserProperty("game_id",gameId);
 	console.log("setting game_id for this user");
-	makeGameLock();
+	makeGameLock(false);
 
 	update();
 	
 	
 }
 
-function makeGameLock(){
+function makeGameLock(bLocked){
 	console.log("making game lock")
 	var GameLock = Parse.Object.extend("gameLocks");
 	var query = new Parse.Query(GameLock);
@@ -271,7 +285,7 @@ function makeGameLock(){
 				lock.set("user",Utils.getCurrentUser(false));
 				
 				
-				lock.set("locked",false);
+				lock.set("locked",bLocked);
 				lock.save(null, {
 					success: function(newGame) {
 					// Execute any logic that should take place after the object is saved.
@@ -291,8 +305,7 @@ function makeGameLock(){
 		
 		foundlock.set("game",game);
 		foundlock.set("user",Utils.getCurrentUser(false));
-		
-		foundlock.set("locked",false);
+		lock.set("locked",bLocked);
 		foundlock.save(null, {
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
@@ -328,6 +341,15 @@ function update(){
 			if(game==undefined){
 				gameNonExistent();
 				return;
+
+			//TODO
+			//need to check if locked in...
+			//right now you can refresh and change your answers
+			} else if(game.get("calculating_results")){
+				Utils.showError("<strong>Too late!</strong> Manager is calculating results right now, wait until the next question");
+				updateStatus(calculatingResults);
+				setSelectedDisabled(true);
+				waitForNextQuestion(game)
 			} else if(game.get("started") && game.get("current_question") !== undefined){
 				//get question
 				//enable buttons
@@ -417,6 +439,46 @@ function getUsersInGame(){
 		}	
 	}
 
+
+	function getAndUpdateUserGameStatus(game){
+
+		var Results = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(Results);
+		query.equalTo("user",Utils.getCurrentUser(false));
+		query.equalTo("question",oldquestion);
+		//query.equalTo("game",game);
+		query.find({
+		  success: function(results) {
+			var points;
+		  	var votes
+		  	var totalPoints = 0;
+		  	for(var i=0; i<results.length; i++){
+		  		if(results[i].get("game")==game){
+					points = results[i].get("points_received");
+					votes = results[i].get("numberOfVotes");
+		  		} 
+
+		  		totalPoints+= results[i].get("points_received");
+		  	}
+		 	
+		 	if(votes !== undefined && points !==undefined){
+		 		updateUserGameStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points);
+		 	}
+
+		 	updateScore(totalPoints);
+
+		  },
+		  error: function(error) {
+		  	console.log("couldn't get score of last game");
+		  }
+		});
+	}
+
+	function updateScore(points){
+		$(".player_score").html(points);
+
+	}
+
 	function updateUserGameStatus(msg){
 		var alert = '<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button> MESSAGE	</div>'
 
@@ -438,18 +500,18 @@ function getUsersInGame(){
 	}
 
 	function showQuestion(question){
-
+		oldquestion = currentquestion;
 		currentquestion = question;
 
 		var questionDiv = $(".question");
 
 		if(questionDiv.is(":visible")){
 			questionDiv.slideUp("slow",function(){
-				questionDiv.html(question.get("question"));
+				questionDiv.html("<blockquote>" + question.get("question") +"</blockquote>");
 				questionDiv.slideDown("slow");
 			})
 		} else {
-			questionDiv.html(question.get("question"));
+			questionDiv.html("<blockquote>" + question.get("question") +"</blockquote>");
 			questionDiv.slideDown("slow");
 		
 		}
@@ -566,11 +628,14 @@ function lockIn(){
 	//check game.get("calculating_results") == false.
 	//set gameLock where user == this.user and set "locked" = true
 	//disable buttons and show ""
-
+setSelectedDisabled(true);
 	if(playerGuess==undefined || selectedPlayer == undefined){
 		Utils.showError("<strong>Woops!</strong> Select a player and your guess before locking in!")
+		setSelectedDisabled(false);
 		return;
 	}
+
+	getGame(lockInUserSelection);
 
 
 
@@ -578,6 +643,109 @@ function lockIn(){
 	//we need to start a timer to check the status of the game to see if 
 	//to see when calculating_results = false then show the next question (ASSUMING ITS BEEN SET ALREADY)
 	//and enable all buttons
+}
+
+function newQuestion(game){
+	getUsersInGame();
+	showQuestion(game.get("current_question"));
+	getGuesses();
+	setSelectedDisabled(false)
+	updateStatus(timeToPlay)
+	getAndUpdateUserGameStatus(game);
+
+	resetButtons();
+}
+
+function waitForNextQuestion(game){
+	//THIS ASSUMES WE'LL HAVEA NEW QUESTION
+	if(game.get("calculating_results")){
+		setTimeout(getGame(waitForNextQuestion),1000);
+	} else {
+		//we got a new question.
+		newQuestion(game);
+	}
+}
+
+function lockInUserSelection(game){
+	//we don't want to set an answer or anything when they're already calculating
+
+	if(game == undefined){
+		gameNonExistent();
+
+	}else if(game.get("calculating_results")){
+		Utils.showError("<strong>Too late!</strong> Manager is calculating results right now, wait until the next question");
+		updateStatus(calculatingResults);
+		setSelectedDisabled(true);
+		waitForNextQuestion(game)
+	} else {
+		setLock();
+		setUserAnswer();
+		updateStatus(answerLockedIn);
+		waitForCalculatingResults(game);
+
+	}
+}
+
+function waitForCalculatingResults(game){
+	if(!game.get("calculating_results")){
+		setTimeout(getGame(waitForCalculatingResults),1000);
+	} else {
+
+		waitForNextQuestion(game);
+	}
+	
+}
+
+function setUserAnswer(){
+// var selectedPlayer;
+// //their guess as to how many will choose them
+// var playerGuess;
+var gameAnswers = Parse.Object.extend("gameAnswers");
+		var answer = new gameAnswers();
+
+		answer.set("game",game);
+		answer.set("user",Utils.getCurrentUser(false));
+		answer.set("guess",playerGuess);
+		answer.set("player_chosen",selectedPlayer);
+		answer.set("question",currentquestion);
+
+		answer.save(null, {
+		  success: function(newGame) {
+			// Execute any logic that should take place after the object is saved.
+			
+			console.log("answer set");
+		  },
+		  error: function(newGame, error) {
+			// Execute any logic that should take place if the save fails.
+			// error is a Parse.Error with an error code and message.
+			Utils.showError('Failed submitting answer, with error code: ' + error.message);
+		  }
+		});
+
+}
+
+function setLock(){
+	makeGameLock(true);
+}
+
+function getGame(callback){
+		var currentgame = Parse.Object.extend("game");
+	var query = new Parse.Query(currentgame);
+	query.equalTo("unique_id", gameId);
+	query.equalTo("active",true);
+	query.include("current_question");
+	query.first({
+		success: function(object) {
+			game = object;
+
+			callback(game);
+
+
+		},
+		error: function(error) {
+			Utils.showError(error.message);
+		}
+	});
 }
 
 

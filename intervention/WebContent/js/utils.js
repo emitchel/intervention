@@ -37,7 +37,7 @@ $(document).ready(function() {
 **/
 Utils.showError = function(errorMsg){
 
-	$(".error").html(errorMsg );
+	$(".error").html('<button type="button" class="close" data-dismiss="alert">×</button>'+ errorMsg );
 	$(".error").slideDown("slow");
 }
 

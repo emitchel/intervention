@@ -66,3 +66,18 @@ font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
 	font-size:15px;
 }
 
+.player_score {
+	    display: block;
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
+
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+
+    background-color: #373737;
+    color: white;
+    text-align: center;
+    font-size: 1em;
+}
+
