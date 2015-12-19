@@ -175,6 +175,9 @@
 		.first({
 			success : function(object) {
 				game = object;
+				
+				Utils.setUserProperty("game_id",game.get("unique_id"));
+
 				if (game.get("owner_id") !== Utils.getCurrentUser().id) {
 					Utils
 					.showError("You do not own this game, therefore you cannot manage");
@@ -214,7 +217,9 @@
 		timer_getJoinedPlayers = setTimeout(checkForJoinedPlayers, 100);
 	}
 
-	function startGame(){
+
+  function initStartGame(){
+
 		if(game!==undefined){
 			//MAKE GAME HERE TOO
 			game.set("started",true);
@@ -224,6 +229,7 @@
 					//Utils.goPage(Urls.MANAGE_PLAY + "?gameId=" + game.get("unique_id"))
 					console.log("game start");
 					getThenSetRandomQuestion();
+
 				},
 				error: function(newGame, error) {
 					// Execute any logic that should take place if the save fails.
@@ -235,6 +241,12 @@
 			
 			
 		}
+  }
+
+	function startGame(){
+
+		Utils.confirm("Are You Sure?","If you start the game, players can no longer join","Cancel","Yes that's fine",initStartGame);
+
 	}
 	
 	function getThenSetRandomQuestion(){
@@ -271,9 +283,9 @@
 
 	function addPlayer(player) {
 		var className = "label" + player.id;
-		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="alert(STATS)">View Stats</a></div></div></div>'
+		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="STATS">View Stats</a></div></div></div>'
 		panel = panel.replace("NAME", player.get("displayName"));
-		panel = panel.replace("STATS", "UPCOMING: " +Urls.STATS + "?userId=" + player.id);
+		panel = panel.replace("STATS", Urls.STATS + "?userId=" + player.id);
 
 		if (player.id !== Utils.getCurrentUser(false).id
 			&& !Utils.containsPlayer(listOfPlayers, player)) {

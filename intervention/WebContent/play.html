@@ -305,7 +305,7 @@ function makeGameLock(bLocked){
 		
 		foundlock.set("game",game);
 		foundlock.set("user",Utils.getCurrentUser(false));
-		lock.set("locked",bLocked);
+		foundlock.set("locked",bLocked);
 		foundlock.save(null, {
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
