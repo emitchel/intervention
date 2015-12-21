@@ -700,27 +700,89 @@ function setUserAnswer(){
 // var selectedPlayer;
 // //their guess as to how many will choose them
 // var playerGuess;
-var gameAnswers = Parse.Object.extend("gameAnswers");
-		var answer = new gameAnswers();
 
-		answer.set("game",game);
-		answer.set("user",Utils.getCurrentUser(false));
-		answer.set("guess",playerGuess);
-		answer.set("player_chosen",selectedPlayer);
-		answer.set("question",currentquestion);
-
-		answer.save(null, {
-		  success: function(newGame) {
-			// Execute any logic that should take place after the object is saved.
-			
-			console.log("answer set");
-		  },
-		  error: function(newGame, error) {
-			// Execute any logic that should take place if the save fails.
-			// error is a Parse.Error with an error code and message.
-			Utils.showError('Failed submitting answer, with error code: ' + error.message);
-		  }
+console.log("setting user answer")
+	var gameAnswers = Parse.Object.extend("gameAnswers");
+	var answer = new Parse.Query(gameAnswers);
+	answer.equalTo("game",game);
+	answer.equalTo("user",Utils.getCurrentUser(false));
+	answer.equalTo("question",currentquestion);
+	answer.first({
+		success: function(foundAnswer) {
+					if(foundAnswer==undefined || foundAnswer.length==0){
+				//need to make it 
+				//(only if they've never been in a game)
+				var gameAnswers = Parse.Object.extend("gameAnswers");
+				var answer = new gameAnswers();
+				answer.set("game",game);
+				answer.set("user",Utils.getCurrentUser(false));
+				answer.set("guess",playerGuess);
+				answer.set("player_chosen",selectedPlayer);
+				answer.set("question",currentquestion);
+				
+				
+				answer.save(null, {
+					success: function(newGame) {
+					// Execute any logic that should take place after the object is saved.
+					console.log("answer created");
+				},
+				error: function(newGame, error) {
+					// Execute any logic that should take place if the save fails.
+					// error is a Parse.Error with an error code and message.
+					console.log(error.message)
+				}
+			});
+	} else {
+		//need to update it
+		//game
+		//blocked
+		
+		foundAnswer.set("game",game);
+		foundAnswer.set("user",Utils.getCurrentUser(false));
+		foundAnswer.set("guess",playerGuess);
+		foundAnswer.set("player_chosen",selectedPlayer);
+		foundAnswer.set("question",currentquestion);
+		
+		foundAnswer.save(null, {
+			success: function(newGame) {
+				// Execute any logic that should take place after the object is saved.
+				console.log("answer updated");
+			},
+			error: function(newGame, error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+				console.log(error.message)
+			}
 		});
+	}
+
+},
+error: function(lock, error) {
+	Utils.showError(error.message);
+}
+});
+
+// var gameAnswers = Parse.Object.extend("gameAnswers");
+// 		var answer = new gameAnswers();
+
+// 		answer.set("game",game);
+// 		answer.set("user",Utils.getCurrentUser(false));
+// 		answer.set("guess",playerGuess);
+// 		answer.set("player_chosen",selectedPlayer);
+// 		answer.set("question",currentquestion);
+
+// 		answer.save(null, {
+// 		  success: function(newGame) {
+// 			// Execute any logic that should take place after the object is saved.
+			
+// 			console.log("answer set");
+// 		  },
+// 		  error: function(newGame, error) {
+// 			// Execute any logic that should take place if the save fails.
+// 			// error is a Parse.Error with an error code and message.
+// 			Utils.showError('Failed submitting answer, with error code: ' + error.message);
+// 		  }
+// 		});
 
 }
 
