@@ -776,7 +776,7 @@ function setScores(){
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
 				var calc = new CalculateScores(game,currentquestion,displayResults);
-			calc.init();
+				calc.init();
 				updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
 				$(".nextquestion").prop('disabled', true);
 				$(".calculateresults").prop('disabled',true);
