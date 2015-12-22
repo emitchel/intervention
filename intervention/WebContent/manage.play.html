@@ -125,6 +125,14 @@
 												
 											</div>
 										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="user_game_status" style="display:none">
+
+												</div>
+											</div>
+										</div>
+										
 									</div>
 								</div>
 							</div>
@@ -136,6 +144,7 @@
 								style="display: none" role="alert"></div>
 							</div>
 						</div>
+						
 						<div class="bs-component">
 							<div class="jumbotron">
 
@@ -222,6 +231,10 @@
 		$(".calculateresultsbutton").click(function(){
 
 			calculateResults();
+		});
+		
+		$(".nextquestion").click(function(){
+			nextQuestion();
 		});
 
 		//setting username
@@ -679,8 +692,54 @@ function calculateResults(){
 	}
 }
 
+function nextQuestion() {
+	$(".calculateresults").prop('disabled',false);
+	//clear user locked labels 
+	//calculating_results = false
+	//unset all player locked labels
+	//results_completed = false
+	
+}
+
+function updateUserGameStatus(msg){
+		var alert = '<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button> MESSAGE	</div>'
+
+		alert = alert.replace("MESSAGE",msg);
+
+		var wrapper = $(".user_game_status");
+
+		if(wrapper.is(":visible")){
+			wrapper.slideUp("slow",function(){
+				wrapper.html(alert);
+				wrapper.slideDown("slow");
+			})
+		} else {
+			wrapper.html(alert);
+			wrapper.slideDown("slow");
+		
+		}
+
+	}
+
 function displayResults(){
-	alert("everything has been calculated");
+	console.log("everything has been calculated");
+	game.set("results_completed",true);
+	game.save(null, {
+			success: function(newGame) {
+				// Execute any logic that should take place after the object is saved.
+				game = newGame;
+				updateUserGameStatus("<strong>Round Over!</strong> Results have been calculated, you can move onto the next question");
+				$(".nextquestion").prop('disabled', false);
+				$(".calculateresults").prop('disabled',true);
+				console.log("results_completed==true");
+			},
+			error: function(newGame, error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+				console.log(error.message)
+			}
+		});
+	
 }
 
 function setScores(){
@@ -710,9 +769,26 @@ function setScores(){
 			//question == current question
 			//points_received == points the participant got (.score)
 			//user_guess == participant.guess
-
-			var calc = new CalculateScores(game,currentquestion,displayResults);
+		console.log("everything has been calculated");
+	game.set("calculating_results",true);
+	game.set("results_completed",false);
+	game.save(null, {
+			success: function(newGame) {
+				// Execute any logic that should take place after the object is saved.
+				var calc = new CalculateScores(game,currentquestion,displayResults);
 			calc.init();
+				updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
+				$(".nextquestion").prop('disabled', true);
+				$(".calculateresults").prop('disabled',true);
+				console.log("calculating_results==true");
+			},
+			error: function(newGame, error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+				console.log(error.message)
+			}
+		});
+			
 }
 
 
