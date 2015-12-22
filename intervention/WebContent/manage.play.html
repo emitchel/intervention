@@ -120,7 +120,7 @@
 														<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
 											</div>
 											<div class="col-lg-3" >			
-													<button  class="calculateresultsbutton btn btn-raised btn-primary" type="button"  data-toggle="dropdown">Calculate Results </button>
+													<button  class="calculateresults btn btn-raised btn-primary" type="button"  data-toggle="dropdown">Calculate Results </button>
 													<button  disabled class="nextquestion btn btn-raised btn-primary" type="button"  disabled data-toggle="dropdown">Next Question </button>
 												
 											</div>
@@ -228,7 +228,7 @@
 			Utils.goPage(Urls.LOGIN);
 		}
 
-		$(".calculateresultsbutton").click(function(){
+		$(".calculateresults").click(function(){
 
 			calculateResults();
 		});
@@ -405,6 +405,32 @@
 			+ "?gameId=" + game.get("unique_id"));
 
 	}
+	
+	function findAndSetNewQuestion(){
+	var questionsobject = Parse.Object.extend("questions");
+		var query = new Parse.Query(questionsobject);
+		query.find({
+			success: function(questions) {
+				
+				var newQuestion = questions[Utils.getRandomInt(0,questions.length-1)];
+				
+				while(newQuestion == currentquestion){
+					newQuestion = questions[Utils.getRandomInt(0,questions.length-1)];
+				}
+				console.log("got new question");
+				game.set("current_question",newQuestion);
+				game.save();
+				showQuestion(newQuestion);
+		},
+		error: function(error) {
+			Utils.showError(error.message);
+		}
+	});
+	}
+	
+	function skipQuestion(){
+		Utils.confirm("Are you sure","If you skip the question, the players must restart their browser to see the new question, are you sure?","No","Yes, skip this question",findAndSetNewQuestion)
+	}
 
 	function showQuestion(question){
 		oldquestion = currentquestion;
@@ -414,11 +440,11 @@
 
 		if(questionDiv.is(":visible")){
 			questionDiv.slideUp("slow",function(){
-				questionDiv.html("<blockquote>" + question.get("question") +"</blockquote>");
+				questionDiv.html("<blockquote>" + question.get("question") +"</blockquote> <a class='skipquestion btn btn-raised btn-xs' href='javascript:skipQuestion();'> Skip this question?</a>");
 				questionDiv.slideDown("slow");
 			})
 		} else {
-			questionDiv.html("<blockquote>" + question.get("question") +"</blockquote>");
+			questionDiv.html("<blockquote>" + question.get("question") +"</blockquote> <a class='skipquestion btn btn-raised btn-xs' href='javascript:skipQuestion();'> Skip this question?</a>");
 			questionDiv.slideDown("slow");
 
 		}
@@ -495,11 +521,12 @@ console.log("setting user answer")
 				answer.set("guess",playerGuess);
 				answer.set("player_chosen",selectedPlayer);
 				answer.set("question",currentquestion);
-				
+				updateUserGameStatus("<strong>Ok!</strong> now wait for all players to lock in before pressing <strong>Calculate Results</strong>");
 				
 				answer.save(null, {
 					success: function(newGame) {
 					// Execute any logic that should take place after the object is saved.
+					
 					console.log("answer created");
 				},
 				error: function(newGame, error) {
@@ -522,6 +549,7 @@ console.log("setting user answer")
 		foundAnswer.save(null, {
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
+				updateUserGameStatus("<strong>Ok!</strong> now wait for all players to lock in before pressing <strong>Calculate Results</strong>");
 				console.log("answer updated");
 			},
 			error: function(newGame, error) {
@@ -655,31 +683,31 @@ function makeGameLock(bLocked){
 				}
 			});
 			} else {
-		//need to update it
-		//game
-		//blocked
-		
-		
-		foundlock.set("game",game);
-		foundlock.set("user",Utils.getCurrentUser(false));
-		foundlock.set("locked",bLocked);
-		foundlock.save(null, {
-			success: function(newGame) {
-				// Execute any logic that should take place after the object is saved.
-				console.log("lock updated");
-			},
-			error: function(newGame, error) {
-				// Execute any logic that should take place if the save fails.
-				// error is a Parse.Error with an error code and message.
-				console.log(error.message)
+				//need to update it
+				//game
+				//blocked
+				
+				
+				foundlock.set("game",game);
+				foundlock.set("user",Utils.getCurrentUser(false));
+				foundlock.set("locked",bLocked);
+				foundlock.save(null, {
+					success: function(newGame) {
+						// Execute any logic that should take place after the object is saved.
+						console.log("lock updated");
+					},
+					error: function(newGame, error) {
+						// Execute any logic that should take place if the save fails.
+						// error is a Parse.Error with an error code and message.
+						console.log(error.message)
+					}
+				});
 			}
-		});
-	}
 
-},
-error: function(lock, error) {
-	Utils.showError(error.message);
-}
+	},
+	error: function(lock, error) {
+		Utils.showError(error.message);
+	}
 });
 }
 
@@ -728,7 +756,7 @@ function displayResults(){
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
 				game = newGame;
-				updateUserGameStatus("<strong>Round Over!</strong> Results have been calculated, you can move onto the next question");
+				updateUserGameStatus("<strong>Round Over!</strong> Results have been calculated! You can view the scoreboard, view question history, or move onto the next question");
 				$(".nextquestion").prop('disabled', false);
 				$(".calculateresults").prop('disabled',true);
 				console.log("results_completed==true");
@@ -770,24 +798,24 @@ function setScores(){
 			//points_received == points the participant got (.score)
 			//user_guess == participant.guess
 		console.log("everything has been calculated");
-	game.set("calculating_results",true);
-	game.set("results_completed",false);
-	game.save(null, {
-			success: function(newGame) {
-				// Execute any logic that should take place after the object is saved.
-				var calc = new CalculateScores(game,currentquestion,displayResults);
-				calc.init();
-				updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
-				$(".nextquestion").prop('disabled', true);
-				$(".calculateresults").prop('disabled',true);
-				console.log("calculating_results==true");
-			},
-			error: function(newGame, error) {
-				// Execute any logic that should take place if the save fails.
-				// error is a Parse.Error with an error code and message.
-				console.log(error.message)
-			}
-		});
+		game.set("calculating_results",true);
+		game.set("results_completed",false);
+		game.save(null, {
+				success: function(newGame) {
+					// Execute any logic that should take place after the object is saved.
+					var calc = new CalculateScores(game,currentquestion,displayResults);
+					calc.init();
+					updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
+					$(".nextquestion").prop('disabled', true);
+					$(".calculateresults").prop('disabled',true);
+					console.log("calculating_results==true");
+				},
+				error: function(newGame, error) {
+					// Execute any logic that should take place if the save fails.
+					// error is a Parse.Error with an error code and message.
+					console.log(error.message)
+				}
+			});
 			
 }
 

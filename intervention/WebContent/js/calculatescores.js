@@ -55,31 +55,69 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 		getGameAnswers();
 	}
 
+	
+	
 	function setQuestionResults(participants,index){
 		if(index<participants.length){
 			var participant = participants[index];
 			var questionResults = Parse.Object.extend("questionResults");
-				var result = new questionResults();
-				result.set("game",me.game);
-				result.set("user",participant.user);
-				result.set("numberOfVotes",Number(participant.votes));
-				result.set("question",me.question);
-				result.set("points_received",Number(participant.score));
-				result.set("user_guess",participant.guess);
-				
-				result.save(null, {
-					success: function(result) {
-					// Execute any logic that should take place after the object is saved.
-					setQuestionResults(participants,++index);
-					console.log("questionResult created");
-				},
-				error: function(result, error) {
-					// Execute any logic that should take place if the save fails.
-					// error is a Parse.Error with an error code and message.
-					Utils.showError(error.message);
+			var query = new Parse.Query(questionResults);
+			query.equalTo("question",me.question);
+			query.equalTo("user",participant.user);
+			query.equalTo("game",me.game);
+			
+			query.first({
+			
+				success: function(foundResult) {
+					if(foundResult==undefined || foundResult.length==0){
+						 var questionResults = Parse.Object.extend("questionResults");
+						var result = new questionResults();
+						result.set("game",me.game);
+						result.set("user",participant.user);
+						result.set("question",me.question);
+						result.set("numberOfVotes",Number(participant.votes));
+						result.set("points_received",Number(participant.score));
+						result.set("user_guess",participant.guess);
+						
+						result.save(null, {
+							success: function(result) {
+							// Execute any logic that should take place after the object is saved.
+							setQuestionResults(participants,++index);
+							console.log("questionResult created");
+						},
+						error: function(result, error) {
+							// Execute any logic that should take place if the save fails.
+							// error is a Parse.Error with an error code and message.
+							Utils.showError(error.message);
+						}
+					});
+				} else {
+					
+					
+					foundResult.set("numberOfVotes",Number(participant.votes));
+					foundResult.set("points_received",Number(participant.score));
+					foundResult.set("user_guess",participant.guess);
+					foundResult.save(null, {
+						success: function(newresult) {
+							// Execute any logic that should take place after the object is saved.
+							setQuestionResults(participants,++index);
+							console.log("result updated");
+						},
+						error: function(newGame, error) {
+							// Execute any logic that should take place if the save fails.
+							// error is a Parse.Error with an error code and message.
+							console.log(error.message)
+						}
+					});
 				}
-			});
 
+			},
+			error: function(lock, error) {
+				Utils.showError(error.message);
+			}
+			
+		});
+			
 		} else {
 			callbackWhenFinished();
 		}
