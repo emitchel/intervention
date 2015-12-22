@@ -156,7 +156,22 @@ Utils.containsPlayer = function(a, obj) {
 
 Utils.showScoreBoard = function(game){
 var html = "";
+var questionResults = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(questionResults);
+		query.equalTo("game", game);
+		query.include("question");
+		query.include("user");
+		query.include("user_guess");
+		query
+		.first({
+			success : function(object) {
+				
 
+			},
+			error : function(error) {
+				Utils.showError(error.message);
+			}
+		});
 
 }
 
