@@ -134,6 +134,16 @@ Utils.formatCode = function(id){
 	
 }
 
+Utils.getPlayerIndex = function(a,obj){
+	var i = a.length;
+    while (i--) {
+       if (a[i].id == obj.id) {
+           return i;
+       }
+    }
+    return -1;
+}
+
 Utils.containsPlayer = function(a, obj) {
     var i = a.length;
     while (i--) {

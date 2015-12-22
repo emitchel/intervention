@@ -30,6 +30,7 @@
 
 	<script type="text/javascript" src="js/urls.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/calculatescores.js"></script>
 	<script type="text/javascript"
 	src="http://www.parsecdn.com/js/parse-latest.js"></script>
 
@@ -119,7 +120,7 @@
 														<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
 											</div>
 											<div class="col-lg-3" >			
-													<button  disabled class="calculateresultsbutton btn btn-raised btn-primary" type="button"  data-toggle="dropdown">Calculate Results </button>
+													<button  class="calculateresultsbutton btn btn-raised btn-primary" type="button"  data-toggle="dropdown">Calculate Results </button>
 													<button  disabled class="nextquestion btn btn-raised btn-primary" type="button"  disabled data-toggle="dropdown">Next Question </button>
 												
 											</div>
@@ -201,7 +202,8 @@
 	var owner;
 
 	var currentquestion;
-	var oldquestion;
+	//used
+	var oldquestion;  
 
 	//the person they chose best fits the description
 	var selectedPlayer;
@@ -677,6 +679,10 @@ function calculateResults(){
 	}
 }
 
+function displayResults(){
+	alert("everything has been calculated");
+}
+
 function setScores(){
 	//get all answer with this game and this question. (gameAnswers)
 	//num of rows == num of votes
@@ -705,7 +711,8 @@ function setScores(){
 			//points_received == points the participant got (.score)
 			//user_guess == participant.guess
 
-
+			var calc = new CalculateScores(game,currentquestion,displayResults);
+			calc.init();
 }
 
 
