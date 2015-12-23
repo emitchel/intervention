@@ -454,14 +454,14 @@ function getUsersInGame(){
 		var query = new Parse.Query(Results);
 		query.equalTo("user",Utils.getCurrentUser(false));
 		query.equalTo("question",oldquestion);
-		//query.equalTo("game",game);
+		query.equalTo("game",game);
 		query.find({
 		  success: function(results) {
 			var points;
 		  	var votes
 		  	var totalPoints = 0;
 		  	for(var i=0; i<results.length; i++){
-		  		if(results[i].get("game")==game){
+		  		if(results[i].get("question")==oldquestion){
 					points = results[i].get("points_received");
 					votes = results[i].get("numberOfVotes");
 		  		} 
@@ -470,7 +470,7 @@ function getUsersInGame(){
 		  	}
 		 	
 		 	if(votes !== undefined && points !==undefined){
-		 		updateUserGameStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points);
+		 		updateUserGameStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points + " for your guess");
 		 	}
 
 		 	updateScore(totalPoints);
@@ -614,22 +614,7 @@ function setSelectedDisabled(bEnabled){
 	$('.lockbutton').prop('disabled', bEnabled);
 }
 
-function setState(){
-	//this is where the current state should be set. 
-	//current question is all
-}
 
-function showScoreBoard(){
-	//query gameScores for scores with this game
-}
-
-function showHistory(){
-	//query gameResults with this game
-	//game must equal the col_game order by question
-	//"who is the laziest?"
-	//elliot received 4 votes
-	//sam received 3 votes
-}
 
 function lockIn(){
 	//as long as playerGuess and selectedPlayer aren't undefined
@@ -660,6 +645,8 @@ function newQuestion(game){
 	setSelectedDisabled(false)
 	updateStatus(timeToPlay)
 	getAndUpdateUserGameStatus(game);
+	
+	
 
 	resetButtons();
 }

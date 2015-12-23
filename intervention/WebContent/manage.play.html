@@ -342,7 +342,12 @@
 
 		
 	}
-
+	
+	function undoLabels(){
+		$(".player_wrapper").empty()
+		showPlayers();
+	}
+	
 	function showPlayers(){
 		for(var i =0; i<listOfPlayers.length;i++){
 			var player = listOfPlayers[i];
@@ -429,6 +434,8 @@
 				game.set("current_question",newQuestion);
 				game.save();
 				showQuestion(newQuestion);
+				
+				
 		},
 		error: function(error) {
 			Utils.showError(error.message);
@@ -728,9 +735,53 @@ function calculateResults(){
 	}
 }
 
+function unsetGameLocks(callback){
+//
+
+	console.log("unsetting game locks")
+	var GameLock = Parse.Object.extend("gameLocks");
+	var query = new Parse.Query(GameLock);
+	query.equalTo("game",game);
+
+	query.find({
+		success: function(foundlocks) {
+				for(var i=0;i<foundlocks.length;i++){
+					foundlocks.set("locked",false);
+				}
+				
+				callback();
+			},
+			error: function(foundlocks, error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+				Utils.showError(error.message)
+			}
+			});
+
+//			
+}
+
 function nextQuestion() {
 	$(".calculateresults").prop('disabled',false);
 	//clear user locked labels 
+	unsetGameLocks(function(){
+		game.set("calculating_results",false);
+		game.set("results_completed",false);
+		game.save(null, {
+			success: function(newGame) {
+				game = newGame;
+				findAndSetNewQuestion()
+				undoLabels();
+				setSelectedDisabled(false)
+				
+			},
+			error: function(newGame, error) {
+				// Execute any logic that should take place if the save fails.
+				// error is a Parse.Error with an error code and message.
+				console.log(error.message)
+			}
+		});
+	});
 	//calculating_results = false
 	//unset all player locked labels
 	//results_completed = false
