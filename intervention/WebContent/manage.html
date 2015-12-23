@@ -287,9 +287,9 @@
 
 	function addPlayer(player) {
 		var className = "label" + player.id;
-		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="STATS">View Stats</a></div></div></div>'
+		var panel = '<div style="display:none" class="'+className+' col-xs-4"><div class="panel panel-info">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href=STATS>View Stats</a></div></div></div>'
 		panel = panel.replace("NAME", player.get("displayName"));
-		panel = panel.replace("STATS", Urls.STATS + "?userId=" + player.id);
+		panel = panel.replace("STATS", 'javascript:Utils.showStats("'+player.id+'")');
 
 		if (player.id !== Utils.getCurrentUser(false).id
 			&& !Utils.containsPlayer(listOfPlayers, player)) {

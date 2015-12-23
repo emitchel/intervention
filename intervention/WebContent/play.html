@@ -101,8 +101,8 @@
 								</div>
 								<div class="col-md-4">
 
-									<a href="#" class="btn btn-raised btn-default" >Scoreboard</a>
-									<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
+									<a href="#" class="scoreboard btn btn-raised btn-default" >Scoreboard</a>
+									<a href="#" class="questionhistory btn btn-raised btn-default" >View Question History</a>
 
 								</div>
 							</div>
@@ -206,6 +206,14 @@ $(document).ready(function() {
 	if(!Utils.userLoggedIn()){
 		Utils.goPage(Urls.LOGIN);
 	}
+
+	$(".questionhistory").click(function(){
+			Utils.showQuestionHistory(game);
+		});
+
+		$(".scoreboard").click(function(){
+			Utils.showScoreBoard(game,listOfAllPlayers);
+		});
 	
 	//setting username
 	var user = Parse.User.current();

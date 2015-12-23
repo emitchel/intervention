@@ -116,8 +116,8 @@
 											<div class="col-lg-3" >
 
 
-														<a href="#" class="btn btn-raised btn-default" >Scoreboard</a>
-														<a href="#" class=" btn btn-raised btn-default" >View Question History</a>
+														<a href="#" class="scoreboard btn btn-raised btn-default" >Scoreboard</a>
+														<a href="#" class="questionhistory btn btn-raised btn-default" >View Question History</a>
 											</div>
 											<div class="col-lg-3" >			
 													<button  class="calculateresults btn btn-raised btn-primary" type="button"  data-toggle="dropdown">Calculate Results </button>
@@ -232,6 +232,14 @@
 
 			calculateResults();
 		});
+
+		$(".questionhistory").click(function(){
+			Utils.showQuestionHistory(game);
+		});
+
+		$(".scoreboard").click(function(){
+			Utils.showScoreBoard(game,listOfPlayers);
+		});
 		
 		$(".nextquestion").click(function(){
 			nextQuestion();
@@ -286,7 +294,7 @@
 			var id = listOfLockedInPlayers[i].id
 			var className = "lockedlabel" + id;
 
-			var panel = '<div class="panel panel-success">  <div class="panel-heading">    <h3 class="panel-title"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> NAME</h3>  </div>  <div class="panel-body"><a href="STATS">View Stats</a></div></div>'
+			var panel = '<div class="panel panel-success">  <div class="panel-heading">    <h3 class="panel-title"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> NAME</h3>  </div>  <div class="panel-body"><a href=STATS>View Stats</a></div></div>'
 
 			var name =  listOfLockedInPlayers[i].get("displayName");
 
@@ -294,7 +302,7 @@
 				name = "<strong>Yourself</strong>"
 			}
 			panel = panel.replace("NAME", name);
-			panel = panel.replace("STATS", Urls.STATS + "?userId=" + id);
+			panel = panel.replace("STATS", 'javascript:Utils.showStats("'+id+'")');
 
 			$("."+className).html(panel);
 		}
@@ -339,7 +347,7 @@
 		for(var i =0; i<listOfPlayers.length;i++){
 			var player = listOfPlayers[i];
 			var className = "lockedlabel" + player.id;
-			var panel = '<div style="display:none" class="'+className+' unlockedplayer col-xs-4"><div class="panel panel-default"> <span style="display:none" class="glyphicon glyphicon-lock" aria-hidden="true"></span> <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href="STATS">View Stats</a></div></div></div>'
+			var panel = '<div style="display:none" class="'+className+' unlockedplayer col-xs-4"><div class="panel panel-default"> <span style="display:none" class="glyphicon glyphicon-lock" aria-hidden="true"></span> <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><a href=STATS>View Stats</a></div></div></div>'
 
 			var name =  listOfPlayers[i].get("displayName");
 
@@ -349,7 +357,7 @@
 			panel = panel.replace("NAME", name);
 
 			panel = panel.replace("NAME", name);
-			panel = panel.replace("STATS", Urls.STATS + "?userId=" + player.id);
+			panel = panel.replace("STATS", 'javascript:Utils.showStats("'+player.id+'")');
 
 			$(".player_wrapper").append(panel);
 			$("." + className).fadeIn()
