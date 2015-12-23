@@ -761,6 +761,43 @@ function unsetGameLocks(callback){
 //			
 }
 
+function getAndUpdateUserGameStatus(game){
+
+		var Results = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(Results);
+		query.equalTo("user",Utils.getCurrentUser(false));
+		query.include("question");
+		query.equalTo("game",game);
+		query.find({
+		  success: function(results) {
+			var points;
+		  	var votes
+		  	var totalPoints = 0;
+		  	for(var i=0; i<results.length; i++){
+		  		if(results[i].get("question")==oldquestion){
+					points = results[i].get("points_received");
+					votes = results[i].get("numberOfVotes");
+		  		} 
+
+		  		totalPoints+= results[i].get("points_received");
+		  	}
+		 	
+		 	
+
+		 	updateScore(totalPoints);
+
+		  },
+		  error: function(error) {
+		  	console.log("couldn't get score of last game");
+		  }
+		});
+	}
+	
+	function updateScore(points){
+		$(".player_score").html(points);
+
+	}
+
 function nextQuestion() {
 	$(".calculateresults").prop('disabled',false);
 	//clear user locked labels 
@@ -773,6 +810,7 @@ function nextQuestion() {
 				findAndSetNewQuestion()
 				undoLabels();
 				setSelectedDisabled(false)
+				getAndUpdateUserGameStatus(newGame)
 				
 			},
 			error: function(newGame, error) {

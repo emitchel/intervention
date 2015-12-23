@@ -452,8 +452,9 @@ function getUsersInGame(){
 
 		var Results = Parse.Object.extend("questionResults");
 		var query = new Parse.Query(Results);
+		query.include("question");
 		query.equalTo("user",Utils.getCurrentUser(false));
-		query.equalTo("question",oldquestion);
+		//query.equalTo("question",oldquestion);
 		query.equalTo("game",game);
 		query.find({
 		  success: function(results) {
