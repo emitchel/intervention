@@ -19,11 +19,13 @@
 	<link
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
+	<link href="css/jquery-ui.css" rel="stylesheet">
 	<link href="css/bootstrap-material-design.css" rel="stylesheet">
 	<link href="css/ripples.min.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet">
 
 	<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="js/ripples.min.js"></script>
 	<script type="text/javascript" src="js/material.min.js"></script>
@@ -271,7 +273,7 @@
 				if (game.get("owner_id") !== Utils.getCurrentUser().id) {
 					Utils
 					.showError("You do not own this game, therefore you cannot manage");
-					setTimeout(Utils.goPage(Urls.HOME), 3000);
+					setTimeout(function(){Utils.goPage(Urls.HOME)}, 3000);
 					return;
 				} else if (!game.get("started")) {
 
@@ -412,14 +414,35 @@
 		showQuestion(game.get("current_question"));
 		getGuesses();
 		setSelectedDisabled(false)
-		
+		getAndSetScore();
 		$(".link_to_main").val(
 			window.location.href.split("/manage")[0] + "/" + Urls.MAIN
 			+ "?gameId=" + game.get("unique_id"));
 
 	}
 	
-	function findAndSetNewQuestion(callback){
+	function setUpForNewQuestion(){
+					game.set("calculating_results",false);
+					game.set("results_completed",false);
+					game.save(null, {
+						success: function(newGame) {
+							game = newGame;
+							undoLabels();
+							setSelectedDisabled(false)
+							
+							
+						},
+						error: function(newGame, error) {
+							// Execute any logic that should take place if the save fails.
+							// error is a Parse.Error with an error code and message.
+							console.log(error.message)
+						}
+					});
+	}
+
+				
+	
+	function findAndSetNewQuestion(){
 	var questionsobject = Parse.Object.extend("questions");
 		var query = new Parse.Query(questionsobject);
 		query.find({
@@ -434,7 +457,7 @@
 				game.set("current_question",newQuestion);
 				game.save();
 
-				callback();
+				setUpForNewQuestion();
 				showQuestion(newQuestion);
 				
 				
@@ -668,7 +691,7 @@ function setSelectedDisabled(bEnabled){
 
 function EndGame() {
 	updateUserGameStatus("<strong>Wow!</strong> Game over, check the scoreboard to see who won");
-	game.set("active",false);
+	game.set("finished",true);
 	game.save();
 	setSelectedDisabled(true);
 	$(".calculateresults").prop('disabled',false);
@@ -742,7 +765,7 @@ function calculateResults(){
 	}
 }
 
-function unsetGameLocks(callback){
+function unsetGameLocks(){
 //
 
 	console.log("unsetting game locks")
@@ -757,25 +780,7 @@ function unsetGameLocks(callback){
 					foundlocks[i].save();
 				}
 				
-				callback(function(){
-					game.set("calculating_results",false);
-					game.set("results_completed",false);
-					game.save(null, {
-						success: function(newGame) {
-							game = newGame;
-							undoLabels();
-							setSelectedDisabled(false)
-							getAndUpdateUserGameStatus(newGame)
-							
-						},
-						error: function(newGame, error) {
-							// Execute any logic that should take place if the save fails.
-							// error is a Parse.Error with an error code and message.
-							console.log(error.message)
-						}
-					});
-
-				});
+				findAndSetNewQuestion();
 			},
 			error: function(foundlocks, error) {
 				// Execute any logic that should take place if the save fails.
@@ -786,6 +791,33 @@ function unsetGameLocks(callback){
 
 //			
 }
+
+function getAndSetScore(){
+	var Results = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(Results);
+		query.equalTo("user",Utils.getCurrentUser(false));
+		//query.equalTo("question",oldquestion);
+		query.equalTo("game",game);
+		query.find({
+		  success: function(results) {
+			var points;
+		  	var votes
+		  	var totalPoints = 0;
+		  	for(var i=0; i<results.length; i++){
+
+		  		totalPoints+= results[i].get("points_received");
+		  	}
+		 	
+		 	
+
+		 	updateScore(totalPoints);
+
+		  },
+		  error: function(error) {
+		  	console.log("couldn't get score of last game");
+		  }
+		});
+	}
 
 function getAndUpdateUserGameStatus(game){
 
@@ -800,7 +832,7 @@ function getAndUpdateUserGameStatus(game){
 		  	var votes
 		  	var totalPoints = 0;
 		  	for(var i=0; i<results.length; i++){
-		  		if(results[i].get("question")==oldquestion){
+		  		if(results[i].get("question").get("question")==currentquestion.get("question")){
 					points = results[i].get("points_received");
 					votes = results[i].get("numberOfVotes");
 		  		} 
@@ -825,14 +857,15 @@ function getAndUpdateUserGameStatus(game){
 	
 	function updateScore(points){
 		$(".player_score").html(points);
-
+		$(".player_score").effect("highlight");
 	}
 
 function nextQuestion() {
 	$(".calculateresults").prop('disabled',false);
 	$(".nextquestion").prop('disabled', true);
 	
-	unsetGameLocks(findAndSetNewQuestion)
+	unsetGameLocks()
+	resetButtons();
 	
 	//calculating_results = false
 	//unset all player locked labels
@@ -867,7 +900,7 @@ function displayResults(){
 			success: function(newGame) {
 				// Execute any logic that should take place after the object is saved.
 				game = newGame;
-				updateUserGameStatus("<strong>Round Over!</strong> Results have been calculated! You can view the scoreboard, view question history, or move onto the next question");
+				getAndUpdateUserGameStatus(game)
 				$(".nextquestion").prop('disabled', false);
 				$(".calculateresults").prop('disabled',true);
 				console.log("results_completed==true");
@@ -908,6 +941,7 @@ function setScores(){
 			//question == current question
 			//points_received == points the participant got (.score)
 			//user_guess == participant.guess
+			updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
 		console.log("everything has been calculated");
 		game.set("calculating_results",true);
 		game.set("results_completed",false);
@@ -916,7 +950,7 @@ function setScores(){
 					// Execute any logic that should take place after the object is saved.
 					var calc = new CalculateScores(game,currentquestion,displayResults);
 					calc.init();
-					updateUserGameStatus("<strong>Thinking...</strong> Calculating results, please hold.");
+					
 					$(".nextquestion").prop('disabled', true);
 					$(".calculateresults").prop('disabled',true);
 					console.log("calculating_results==true");

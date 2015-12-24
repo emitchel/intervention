@@ -19,11 +19,13 @@
 	<link
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
+	<link href="css/jquery-ui.css" rel="stylesheet">
 	<link href="css/bootstrap-material-design.css" rel="stylesheet">
 	<link href="css/ripples.min.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet">
 
 	<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="js/ripples.min.js"></script>
 	<script type="text/javascript" src="js/material.min.js"></script>
@@ -258,7 +260,7 @@ function grabObjects(){
 function gameNonExistent(){
 
 	user = Utils.unsetProperty("game_id");
-	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home <strong>OR </strong> if the was ended, click <a href=''> here </a> to view the scoreboard");
+	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home");
 }
 
 function initGame(){
@@ -340,21 +342,23 @@ function update(){
 	var currentgame = Parse.Object.extend("game");
 	var query = new Parse.Query(currentgame);
 	query.equalTo("unique_id", gameId);
-	query.equalTo("active",true);
 	query.include("current_question");
 	query.first({
 		success: function(object) {
 			game = object;
 
-			if(game==undefined){
+			if(game==undefined || !game.get("active")){
 				gameNonExistent();
 				return;
 
+			} else if(game.get("finished")){
+			updateUserGameStatus("<strong>Wow!</strong> Game over, check the scoreboard to see who won");
+			setSelectedDisabled(true)
 			//TODO
 			//need to check if locked in...
 			//right now you can refresh and change your answers
 			} else if(game.get("calculating_results")){
-				Utils.showError("<strong>Too late!</strong> Manager is calculating results right now, wait until the next question");
+				Utils.showError("<strong>Too late!</strong> Manager is wrapping up the last question right now, wait until the next question");
 				updateStatus(calculatingResults);
 				setSelectedDisabled(true);
 				waitForNextQuestion(game)
@@ -368,7 +372,7 @@ function update(){
 				getGuesses();
 				setSelectedDisabled(false)
 				updateStatus(timeToPlay)
-
+				getAndSetScore();
 				console.log("game has started, setting data");
 
 			} else {
@@ -446,7 +450,33 @@ function getUsersInGame(){
 				status.fadeIn("fast");
 		}	
 	}
+	
+	function getAndSetScore(){
+	var Results = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(Results);
+		query.equalTo("user",Utils.getCurrentUser(false));
+		//query.equalTo("question",oldquestion);
+		query.equalTo("game",game);
+		query.find({
+		  success: function(results) {
+			var points;
+		  	var votes
+		  	var totalPoints = 0;
+		  	for(var i=0; i<results.length; i++){
 
+		  		totalPoints+= results[i].get("points_received");
+		  	}
+		 	
+		 	
+
+		 	updateScore(totalPoints);
+
+		  },
+		  error: function(error) {
+		  	console.log("couldn't get score of last game");
+		  }
+		});
+	}
 
 	function getAndUpdateUserGameStatus(game){
 
@@ -462,7 +492,7 @@ function getUsersInGame(){
 		  	var votes
 		  	var totalPoints = 0;
 		  	for(var i=0; i<results.length; i++){
-		  		if(results[i].get("question")==oldquestion){
+		  		if(results[i].get("question").get("question")==currentquestion.get("question")){
 					points = results[i].get("points_received");
 					votes = results[i].get("numberOfVotes");
 		  		} 
@@ -471,7 +501,7 @@ function getUsersInGame(){
 		  	}
 		 	
 		 	if(votes !== undefined && points !==undefined){
-		 		updateUserGameStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points + " for your guess");
+		 		updateStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points + " for your guess");
 		 	}
 
 		 	updateScore(totalPoints);
@@ -485,7 +515,7 @@ function getUsersInGame(){
 
 	function updateScore(points){
 		$(".player_score").html(points);
-
+		$(".player_score").effect("highlight");
 	}
 
 	function updateUserGameStatus(msg){
@@ -603,10 +633,10 @@ function getGuesses(){
 
 function resetButtons(){
 
-$(".player_selected").html("Who best fits this description");
-$(".guess").html("How many do you think will choose you?")
-playerGuess = undefined;
-selectedPlayer = undefined;
+	$(".player_selected").html("Who best fits this description");
+	$(".guess").html("How many do you think will choose you?")
+	playerGuess = undefined;
+	selectedPlayer = undefined;
 }
 
 function setSelectedDisabled(bEnabled){
@@ -622,7 +652,7 @@ function lockIn(){
 	//check game.get("calculating_results") == false.
 	//set gameLock where user == this.user and set "locked" = true
 	//disable buttons and show ""
-setSelectedDisabled(true);
+	setSelectedDisabled(true);
 	if(playerGuess==undefined || selectedPlayer == undefined){
 		Utils.showError("<strong>Woops!</strong> Select a player and your guess before locking in!")
 		setSelectedDisabled(false);
@@ -644,7 +674,7 @@ function newQuestion(game){
 	getGuesses();
 	setSelectedDisabled(false)
 	updateStatus(timeToPlay)
-	getAndUpdateUserGameStatus(game);
+	
 	
 	
 
@@ -654,11 +684,45 @@ function newQuestion(game){
 function waitForNextQuestion(game){
 	//THIS ASSUMES WE'LL HAVEA NEW QUESTION
 	if(game.get("calculating_results")){
-		setTimeout(getGame(waitForNextQuestion),1000);
+		setTimeout(function(){getGame(waitForNextQuestion)},1000);
 	} else {
 		//we got a new question.
 		newQuestion(game);
 	}
+}
+
+function showTheScoreBoard(){
+	Utils.showScoreBoard(game,listOfAllPlayers);
+}
+
+function gameFinished(){
+	var Results = Parse.Object.extend("questionResults");
+		var query = new Parse.Query(Results);
+		query.include("question");
+		query.equalTo("user",Utils.getCurrentUser(false));
+		//query.equalTo("question",oldquestion);
+		query.equalTo("game",game);
+		query.find({
+		  success: function(results) {
+			var points;
+		  	var votes
+		  	var totalPoints = 0;
+		  	for(var i=0; i<results.length; i++){
+
+		  		totalPoints+= results[i].get("points_received");
+		  	}
+		 	
+		 	if(votes !== undefined && points !==undefined){
+			
+		 		$(".main").html("<strong>Game Over!</strong> You scored a total of " + totalPoints + " points. Click <a href='javascript:showTheScoreBoard()'>here </a>to view the full scoreboard");
+		 	}
+
+
+		  },
+		  error: function(error) {
+		  	console.log("couldn't get score of last game");
+		  }
+		});
 }
 
 function lockInUserSelection(game){
@@ -666,7 +730,8 @@ function lockInUserSelection(game){
 
 	if(game == undefined){
 		gameNonExistent();
-
+	} else if(game.get("finished")){
+		gameFinished();
 	}else if(game.get("calculating_results")){
 		Utils.showError("<strong>Too late!</strong> Manager is calculating results right now, wait until the next question");
 		updateStatus(calculatingResults);
@@ -682,10 +747,10 @@ function lockInUserSelection(game){
 }
 
 function waitForCalculatingResults(game){
-	if(!game.get("calculating_results")){
-		setTimeout(getGame(waitForCalculatingResults),1000);
+	if(!game.get("results_completed")){
+		setTimeout(function(){getGame(waitForCalculatingResults)},1000);
 	} else {
-
+		getAndUpdateUserGameStatus(game);
 		waitForNextQuestion(game);
 	}
 	

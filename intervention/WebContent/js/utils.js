@@ -154,6 +154,23 @@ Utils.containsPlayer = function(a, obj) {
     return false;
 }
 
+Utils.getListOfPlayers = function(results){
+ var listOfPlayers = [];
+ var current = results[0].get("user")
+ listOfPlayers.push(current);
+ for(var i=0;i<results.length;i++){
+	var newuser = results[i].get("user")
+	if(newuser.id!=current.id){
+		listOfPlayers.push(newuser);
+		newuser=current;
+	}
+ 
+ }
+ 
+ return listOfPlayers;
+ 
+}
+
 Utils.showScoreBoard = function(game,listOfPlayers){
 
 
@@ -161,6 +178,7 @@ Utils.showScoreBoard = function(game,listOfPlayers){
 	var questionResults = Parse.Object.extend("questionResults");
 			var query = new Parse.Query(questionResults);
 			query.equalTo("game", game);
+			query.ascending("user");
 			query.include("user");
 			query
 			.find({
@@ -170,6 +188,10 @@ Utils.showScoreBoard = function(game,listOfPlayers){
 											return;
 					}
 
+					if(listOfPlayers==undefined || listOfPlayers.length<=0){
+						listOfPlayers = Utils.getListOfPlayers(results);
+					}
+					
 					for(var i=0; i<listOfPlayers.length; i++){
 						var panel = '<div class="col-xs-4"><div class="panel panel-default">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><span class="score">SCORE</span></div></div></div>'	
 						var score =0;
@@ -248,7 +270,7 @@ Utils.showQuestionHistory = function (game){
 						return;
 					}
 					var currentQuestion = results[0].get("question").get("question");
-					html = '<p><h4>'+currentQuestion+'</h4></p><table class="table table-striped table-hover "><tr><th>User</th><th>Guess</th><th>Votes Received</th><th>Points Received</th></tr>'
+					html = '<p><h4><blockquote>'+currentQuestion+'</blockquote></h4></p><table class="table table-striped table-hover "><tr><th>User</th><th>Guess</th><th>Votes Received</th><th>Points Received</th></tr>'
 					for(var i=0; i<results.length; i++){
 						var thisQuestion = results[i].get("question").get("question");
 						var numberOfVotesReceived = results[i].get("numberOfVotes");
@@ -259,7 +281,7 @@ Utils.showQuestionHistory = function (game){
 							//on new question, make new header and table
 							currentQuestion = thisQuestion;
 							html+="</table>"
-							html += '<p><h4>'+currentQuestion+'</h4></p><table class="table table-striped table-hover "><tr><th>User</th><th>Guess</th><th>Votes Received</th><th>Points Received</th></tr>'
+							html += '<p><h4><blockquote>'+currentQuestion+'</blockquote></h4></p><table class="table table-striped table-hover "><tr><th>User</th><th>Guess</th><th>Votes Received</th><th>Points Received</th></tr>'
 						} 
 							//continue 
 							html+='<tr><td>'+displayName+'</td><td>'+guess+'</td><td>'+numberOfVotesReceived+'</td><td>'+numberOfPointsReceived+'</td></tr>';

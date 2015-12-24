@@ -221,9 +221,13 @@
   function initStartGame(){
 
 		if(game!==undefined){
+			if(listOfPlayers.length+1>2){
 			getThenSetRandomQuestion();
 			//need to set question first....
 			//MAKE GAME HERE TOO
+			} else {
+				Utils.showError("You must have at least 3 players to start");
+			}
 			
 			
 			
@@ -257,7 +261,9 @@
 		game.set("current_question",question)
 		game.save(null, {
 			success: function(newGame) {
-			
+			game.set("calculating_results",false);
+			game.set("finished",false);
+			game.set("results_completed",false);
 			game.set("started",true);
 			game.save(null, {
 				success: function(newGame) {
