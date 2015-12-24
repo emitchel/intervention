@@ -166,6 +166,9 @@ Utils.showScoreBoard = function(game,listOfPlayers){
 			.find({
 				success : function(results) {
 					html = '<div class="player_wrapper row show-grid">'
+					if(results == undefined || results.length<=0) {
+											return;
+					}
 
 					for(var i=0; i<listOfPlayers.length; i++){
 						var panel = '<div class="col-xs-4"><div class="panel panel-default">  <div class="panel-heading">    <h3 class="panel-title">NAME</h3>  </div>  <div class="panel-body"><span class="score">SCORE</span></div></div></div>'	
@@ -195,6 +198,8 @@ Utils.showStats= function(gamerId){
 	var user = Parse.Object.extend("User");
 	var query = new Parse.Query(user);
 	query.get(gamerId,{success:function(foundUser){
+
+
 
 		var questionResults = Parse.Object.extend("questionResults");
 					var query = new Parse.Query(questionResults);
@@ -230,6 +235,7 @@ Utils.showQuestionHistory = function (game){
 		var questionResults = Parse.Object.extend("questionResults");
 			var query = new Parse.Query(questionResults);
 			query.equalTo("game", game);
+			query.descending("updatedAt");
 			query.include("question");
 			query.include("user");
 			query.include("user_guess");
@@ -237,6 +243,10 @@ Utils.showQuestionHistory = function (game){
 			.find({
 				success : function(results) {
 					html = '';
+
+					if(results == undefined || results.length<=0) {
+						return;
+					}
 					var currentQuestion = results[0].get("question").get("question");
 					html = '<p><h4>'+currentQuestion+'</h4></p><table class="table table-striped table-hover "><tr><th>User</th><th>Guess</th><th>Votes Received</th><th>Points Received</th></tr>'
 					for(var i=0; i<results.length; i++){

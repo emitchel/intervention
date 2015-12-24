@@ -258,7 +258,7 @@ function grabObjects(){
 function gameNonExistent(){
 
 	user = Utils.unsetProperty("game_id");
-	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home");
+	$(".main").html("Game no longer exists, click <a href='"+Urls.HOME+"'>here</a> to go home <strong>OR </strong> if the was ended, click <a href=''> here </a> to view the scoreboard");
 }
 
 function initGame(){
@@ -640,7 +640,6 @@ setSelectedDisabled(true);
 }
 
 function newQuestion(game){
-	getUsersInGame();
 	showQuestion(game.get("current_question"));
 	getGuesses();
 	setSelectedDisabled(false)

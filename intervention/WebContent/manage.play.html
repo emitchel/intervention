@@ -419,7 +419,7 @@
 
 	}
 	
-	function findAndSetNewQuestion(){
+	function findAndSetNewQuestion(callback){
 	var questionsobject = Parse.Object.extend("questions");
 		var query = new Parse.Query(questionsobject);
 		query.find({
@@ -433,6 +433,8 @@
 				console.log("got new question");
 				game.set("current_question",newQuestion);
 				game.save();
+
+				callback();
 				showQuestion(newQuestion);
 				
 				
@@ -665,7 +667,12 @@ function setSelectedDisabled(bEnabled){
 }
 
 function EndGame() {
-
+	updateUserGameStatus("<strong>Wow!</strong> Game over, check the scoreboard to see who won");
+	game.set("active",false);
+	game.save();
+	setSelectedDisabled(true);
+	$(".calculateresults").prop('disabled',false);
+	$(".nextquestion").prop('disabled', true);
 }
 
 function makeGameLock(bLocked){
@@ -746,10 +753,29 @@ function unsetGameLocks(callback){
 	query.find({
 		success: function(foundlocks) {
 				for(var i=0;i<foundlocks.length;i++){
-					foundlocks.set("locked",false);
+					foundlocks[i].set("locked",false);
+					foundlocks[i].save();
 				}
 				
-				callback();
+				callback(function(){
+					game.set("calculating_results",false);
+					game.set("results_completed",false);
+					game.save(null, {
+						success: function(newGame) {
+							game = newGame;
+							undoLabels();
+							setSelectedDisabled(false)
+							getAndUpdateUserGameStatus(newGame)
+							
+						},
+						error: function(newGame, error) {
+							// Execute any logic that should take place if the save fails.
+							// error is a Parse.Error with an error code and message.
+							console.log(error.message)
+						}
+					});
+
+				});
 			},
 			error: function(foundlocks, error) {
 				// Execute any logic that should take place if the save fails.
@@ -781,6 +807,10 @@ function getAndUpdateUserGameStatus(game){
 
 		  		totalPoints+= results[i].get("points_received");
 		  	}
+
+		  	if(votes !== undefined && points !==undefined){
+		 		updateUserGameStatus("<strong>Results are in!</strong> " + votes + " people voted for you on the last question so you received " + points + " for your guess");
+		 	}
 		 	
 		 	
 
@@ -800,26 +830,10 @@ function getAndUpdateUserGameStatus(game){
 
 function nextQuestion() {
 	$(".calculateresults").prop('disabled',false);
-	//clear user locked labels 
-	unsetGameLocks(function(){
-		game.set("calculating_results",false);
-		game.set("results_completed",false);
-		game.save(null, {
-			success: function(newGame) {
-				game = newGame;
-				findAndSetNewQuestion()
-				undoLabels();
-				setSelectedDisabled(false)
-				getAndUpdateUserGameStatus(newGame)
-				
-			},
-			error: function(newGame, error) {
-				// Execute any logic that should take place if the save fails.
-				// error is a Parse.Error with an error code and message.
-				console.log(error.message)
-			}
-		});
-	});
+	$(".nextquestion").prop('disabled', true);
+	
+	unsetGameLocks(findAndSetNewQuestion)
+	
 	//calculating_results = false
 	//unset all player locked labels
 	//results_completed = false
