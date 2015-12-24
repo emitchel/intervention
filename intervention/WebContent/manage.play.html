@@ -159,7 +159,7 @@
 								</div>
 
 								<div class="row">
-									<div class="col-xs-8">
+									<div class="col-md-12">
 										<div class="players dropdown">
 											<button  disabled class="playersbutton btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 												<span class="player_selected"> Who best fits this description?</span>
@@ -171,7 +171,7 @@
 
 										<div class="guesses dropdown">
 											<button   disabled  class="guessesbutton btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-												<span class="guess">How many do you think will choose you?</span>
+												<span class="guess">How many will choose you?</span>
 												<span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -181,8 +181,6 @@
 												<li><a href="javascript:guessSelected('all')" >All</a></li>
 											</ul>
 										</div>
-									</div>
-									<div class="col-xs-4">
 										<button   disabled  onclick="javascript:lockIn()" class="lockbutton btn btn-raised btn-primary btn-lg" ><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> <span class="glyphicon-class">Lock</span></button>
 
 									</div>
@@ -677,7 +675,7 @@ function guessSelected(guess){
 function resetButtons(){
 
 	$(".player_selected").html("Who best fits this description");
-	$(".guess").html("How many do you think will choose you?")
+	$(".guess").html("How many will choose you?")
 	playerGuess = undefined;
 	selectedPlayer = undefined;
 }
