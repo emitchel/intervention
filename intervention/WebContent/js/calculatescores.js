@@ -41,6 +41,10 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 		this.score = 0;
 		this.guess = guess;
 		this.votes = 0;
+		
+		this.highestVoted = false;
+		this.tiedWithHighestVotes = false;
+		
 		this.id = function(){
 			return me.user.id;
 		}
