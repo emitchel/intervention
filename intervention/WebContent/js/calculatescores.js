@@ -127,6 +127,49 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 		}
 	}
 
+
+
+	function checkMostVotes(participants){
+		// first find the highest vote count
+		
+		var highestVote = 0;
+		for(var i =0;i<participants.length;i++){
+			var voteCount = participants[i].votes;
+			if(voteCount > highestVote){
+				highestVote = voteCount;
+			}			
+		}
+
+		//then set every player with that vote count, the 'highestVoted' flag
+		var numberOfPeopleWithHighestvote = 0;
+		for(var i =0;i<participants.length;i++){
+			var part = participants[i];
+			if(part.votes == highestVote){
+				numberOfPeopleWithHighestvote++;
+			}			
+		}
+
+		//now if `numberOfPeopleWithHighestvote` is 1 then set that player to highest vote
+		//otherwise set everyone to 'tiedWithHighestVote'
+
+		//true if highest, false if tied
+		var bHighestVote = (numberOfPeopleWithHighestvote ==1);
+		for(var i =0;i<participants.length;i++){
+			var part = participants[i];
+			if(part.votes == highestVote){
+				if(bHighestVote){
+					part.highestVoted = true;
+				} else {	
+					part.tiedWithHighestVote = true;
+				}
+			}		
+
+			participants[i] = part;	
+		}
+
+		checkParticipantGuesses(participants)
+	}
+
 	function checkParticipantGuesses(participants){
 		//iterate through all participant check their guess (none, some, most);
 	//if they guessed none, there better not be any players that exist with their id
@@ -147,11 +190,11 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 					participant.score = 3;
 				}
 			} else if (guess =="Some"){
-				if(participant.votes > 0 && participant.votes < minimumNumberOfVotesForMost){
+				if(participant.votes > 0 && !participant.highestVoted ){
 					participant.score = 1;
 				}
 			} else if(guess=="Most"){
-				if(participant.votes >= minimumNumberOfVotesForMost){
+				if(participant.highestVoted){
 					participant.score = 3;
 				}
 			} else if(guess= "All"){
@@ -186,6 +229,7 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 		           return i;
 		       }
 		    }
+
 		    return -1;
 		}
 		// for(var i=0;i<gameAnswers.length;i++){
@@ -222,7 +266,7 @@ var CalculateScores = function(game,question,callbackWhenFinished){
 			}
 		}
 
-		checkParticipantGuesses(participants);
+		checkMostVotes(participants);
 	}
 
 	function getGameAnswers(){
