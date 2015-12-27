@@ -101,7 +101,21 @@
 		</div>
 </div>
 <div class="row">
+	<div class="text-center col-md-4" style="margin-top:7px">
+			 <input type="number"  class="form-control"  id="inputCode" placeholder="Enter game code, ex. 123456789">
+			<div class="searching" style="display:none"> ...Searching Game... </div>
+			<div class="join_game" style="display:none">
+					<p><h4><span class="game_search_status"></span></h4></p>
+					<br/>
+					<button type="button" class="joingamebtn btn btn-raised btn-primary" disabled onclick="javascript:joinGameWithCode()">Enter Game<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
+			</div>
+	</div><!-- /input-group -->
+	
+	
 	<div class="text-center col-md-4">
+		<h2>Or</h2>
+	</div>
+		<div class="text-center col-md-4">
 		<button type="button" class="create btn btn-lg btn-primary btn-block btn-raised" >Create Game</button>
 		<div class="loading" style="display:none"> ...Generating Game... </div>
 		
@@ -113,19 +127,6 @@
 			</div>
 		
 	</div>
-	
-	<div class="text-center col-md-4">
-		<h2>Or</h2>
-	</div>
-	<div class="text-center col-md-4" style="margin-top:7px">
-			 <input type="number"  class="form-control"  id="inputCode" placeholder="Enter game code, ex. 123456789">
-			<div class="searching" style="display:none"> ...Searching Game... </div>
-			<div class="join_game" style="display:none">
-					<p><h4><span class="game_search_status"></span></h4></p>
-					<br/>
-					<button type="button" class="joingamebtn btn btn-raised btn-primary" disabled onclick="javascript:joinGameWithCode()">Enter Game<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button>
-			</div>
-	</div><!-- /input-group -->
 	</div>
 	
 </div>
